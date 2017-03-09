@@ -13,8 +13,6 @@ discriminant = b ** 2 - 4 * a * c
 if discriminant < 0
   puts "Дискриминант = #{discriminant}. Корней нет"
 elsif discriminant == 0
-  square_root = Math.sqrt(discriminant)
-  
   x12 = -b / (2 * a)
   puts "Дискриминант = #{discriminant}. Уравнение имеет 2 совпадающих вещественных корня #{x12}"
 else

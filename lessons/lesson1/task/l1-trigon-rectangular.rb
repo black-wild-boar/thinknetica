@@ -8,21 +8,24 @@ b = gets.chomp.to_f
 print "Введите третью сторону треугольника: "
 c = gets.chomp.to_f
 
-if (a == b) && (a == c) && (b == c)
-  puts "Все 3 стороны равны. Треугольник равнобедренный и равносторонний, но не прямоугольный."
-  elsif ((a > b) && (a > c)) && (a ** 2 == b ** 2 + c ** 2)    
-    puts "Гипотенуза = #{a}"
-    puts "Треугольник прямоугольный"
-  elsif (b > a) && (b > c) && (b ** 2 == a ** 2 + c ** 2)
-    puts "Гипотенуза = #{b}"
-    puts "Треугольник прямоугольный"
-  elsif  (c > a) && (c > b) && (c ** 2 == a ** 2 + b ** 2)
-    puts "Гипотенуза = #{c}"
-    puts "Треугольник прямоугольный"
-  elsif (a == b) || (a == c) || (b == c)
-    puts "Треугольник равнобедренный"
-  else
-    puts "Треугольник не прямоугольный"
-    puts "Треугольник не равнобедренный"
-    puts "Треугольник не равносторонный"
+trigon_array = Array.new([a,b,c])
+
+gipotenuse = trigon_array.max
+
+trigon_array.delete(trigon_array.max)
+
+if trigon_array.count == 0
+  puts "Все 3 стороны равны. Треугольник равнобедренный и равносторонний, но не прямоугольный"
+end
+
+if trigon_array.count == trigon_array[0] || trigon_array.count == trigon_array[1]
+  puts "Треугольник равнобедренный"
+else
+  puts "Треугольник не равнобедренный"
+end
+
+if gipotenuse ** 2 == trigon_array[0] ** 2 + trigon_array[1] ** 2
+  puts "Треугольник прямоугольный"
+else
+  puts "Треугольник не прямоугольный"
 end
