@@ -5,8 +5,8 @@ name = gets.chomp
 print "Введите Ваш рост(в см): "
 height = gets.chomp.to_i
 
-if height > 0
+if height > 110
   puts "Привет, #{name}! Ваш идеальный вес: #{height - 110}"
 else
-  puts "Введите рост(в см, >0)"
+  puts "Введите рост(в см, > 110)"
 end
