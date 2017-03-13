@@ -20,19 +20,26 @@ puts numbers
 #3
 fibonacci_array = [0,1]
 
-while (fibonacci_array[-1] + fibonacci_array[-2]) < 100 do 
-    fibonacci_array << fibonacci_array[-1] + fibonacci_array[-2]
+sum = 0
+
+while sum < 100 do 
+    sum = fibonacci_array[-1] + fibonacci_array[-2]
+    fibonacci_array << sum
 end
 
 puts "Fibonacci sequence with numbers < 100: " + fibonacci_array.to_s
 
 #4
-vowels = %w(а о э и у ы е ё ю я)
+#vowels = %w(а о э и у ы е ё ю я)
 
 #abc = ('а'..'я').to_a #косяк метода. Считается, что буквы ё нет => 32 буквы )))
 #abc.each {|i| puts "#{i} #{abc.index(i)+1}" }
 
-abc = ['а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я']
+#abc = ['а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я']
+
+vowels = %w(a e i o u y)
+
+abc = ('a'..'z').to_a
 
 vowels_with_index = {}
 

@@ -7,41 +7,34 @@
 #вывести итоговую сумму за каждый товар. Вычислить и вывести на экран итоговую
 #сумму всех покупок в "корзине".
 
-#basket = {:goods => {:price_per_one => 1, :goods_count => 2}}
+#basket = {:goods => {:price => 1, :count => 2}}
 
 #l2-6
 basket = {}
+sum = 0
 
 loop do 
   puts "Наполним корзинку для красной шапочки. Для вызова злого волка написать стоп"
 
   puts "Что хотим вкусного?"
   goods = gets.chomp
-  if goods == 'стоп'
-    break
-  end
+  break if goods == 'стоп'
 
   puts "Сколько стоит единичка?"
-  price_per_one = gets.chomp.to_f
+  price = gets.chomp.to_f
 
   puts "А сколько штук?"
-  goods_count = gets.chomp.to_i
+  count = gets.chomp.to_i
 
-  if price_per_one <= 0 || goods_count <=0
+  if price <= 0 || count <=0
     puts "Бесплатный сыр - в мышеловке!"
   else
-    basket[goods.to_sym] = {price_per_one: price_per_one, goods_count: goods_count}
+    basket[goods.to_sym] = {price: price, count: count}
+    sum += basket[goods.to_sym][:price] * basket[goods.to_sym][:count]
   end
 
 end
 
-sum = 0
-
-basket.each do | goods, value | 
-  puts "В корзинке есть: #{goods}: #{value}. Сумма за вкусняшку: #{basket[goods.to_sym][:price_per_one] * basket[goods.to_sym][:goods_count]}"
-  sum += basket[goods.to_sym][:price_per_one] * basket[goods.to_sym][:goods_count]
-end
+basket.each { | goods, price_count | puts "В корзинке есть: #{goods}, ценой в: #{price_count[:price]} уе, количеством#{price_count[:count]}. Сумма за вкусняшку: #{basket[goods.to_sym][:price] * basket[goods.to_sym][:count]}" }
 
 puts "Итого в корзинке на сумму:#{sum} вечнозелёных. Шапка не расплатится))"
-
-
