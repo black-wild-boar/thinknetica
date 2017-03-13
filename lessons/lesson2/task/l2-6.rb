@@ -30,7 +30,7 @@ loop do
   if price_per_one <= 0 || goods_count <=0
     puts "Бесплатный сыр - в мышеловке!"
   else
-    basket[goods.to_sym] = {:price_per_one => price_per_one, :goods_count => goods_count}
+    basket[goods.to_sym] = {price_per_one: price_per_one, goods_count: goods_count}
   end
 
 end

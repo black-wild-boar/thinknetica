@@ -10,7 +10,7 @@ puts "Месяцы, у которых количество дней > 30:"
 month_hash.each { |key, value| puts "#{key} is #{value}" if value == 30 }
 
 #2
-numbers = Array.new
+numbers = []
 
 (10..100).step(5) {|i| numbers << i}
 
@@ -27,14 +27,21 @@ end
 puts "Fibonacci sequence with numbers < 100: " + fibonacci_array.to_s
 
 #4
-wovels = ['а', 'о', 'э', 'и', 'у', 'ы', 'е', 'ё', 'ю', 'я']
+vowels = %w(а о э и у ы е ё ю я)
 
 #abc = ('а'..'я').to_a #косяк метода. Считается, что буквы ё нет => 32 буквы )))
 #abc.each {|i| puts "#{i} #{abc.index(i)+1}" }
 
 abc = ['а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я']
 
-wovels_with_index = {}
+vowels_with_index = {}
 
-wovels.each { |value| wovels_with_index[value] = abc.index(value) + 1 if abc.include?(value) }
-puts "{Хэш гласных букв с порядковым номером: #{wovels_with_index}"
+#vowels.each { |value| vowels_with_index[value] = abc.index(value) + 1 if abc.include?(value) }
+
+abc.each_with_index do |value, index| 
+  if vowels.include?(value)
+    vowels_with_index[value] = index+1
+  end
+end
+
+puts "{Хэш гласных букв с порядковым номером: #{vowels_with_index}"
