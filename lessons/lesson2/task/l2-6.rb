@@ -38,7 +38,7 @@ end
 sum = 0
 
 basket.each do | goods, value | 
-  puts "#{goods}: #{value}"
+  puts "В корзинке есть: #{goods}: #{value}. Сумма за вкусняшку: #{basket[goods.to_sym][:price_per_one] * basket[goods.to_sym][:goods_count]}"
   sum += basket[goods.to_sym][:price_per_one] * basket[goods.to_sym][:goods_count]
 end
 
