@@ -15,10 +15,10 @@ year = gets.chomp.to_i
 month_array = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 #if day > month_array[month-1] || day < 1 || month > 12 || month <1 || year < 1
-if day > 31 || not(month.between?(1,month_array.size))
+if day > 31 || !month.between?(1,month_array.size)
   puts "Введены некорректные данные"
 #иначе будет ошибка определения условия day.between?(1, month_array[month-1])
-elsif not(day.between?(1, month_array[month-1])) || year < 1
+elsif !day.between?(1, month_array[month-1]) || year < 1
   puts "Введены некорректные данные"
 else
   if (year % 4 == 0) || (year % 400 == 0) && (year % 100 > 0) 

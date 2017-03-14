@@ -22,10 +22,12 @@ fibonacci_array = [0,1]
 
 sum = 0
 
-while sum < 100 do 
-    sum = fibonacci_array[-1] + fibonacci_array[-2]
-    fibonacci_array << sum
-end
+fibonacci_array << sum while (sum = fibonacci_array[-1] + fibonacci_array[-2]) < 100 
+#аналогично
+#while sum < 100 do 
+#  sum = fibonacci_array[-1] + fibonacci_array[-2]
+#end
+
 
 puts "Fibonacci sequence with numbers < 100: " + fibonacci_array.to_s
 
