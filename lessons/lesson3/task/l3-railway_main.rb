@@ -43,17 +43,17 @@
 
 #l3-1
 class Station
-  attr_reader :station_name, :stations, :trains
+  attr_reader :name, :stations, :trains
 
   @stations = {}
 
-  def initialize(station_name)
-    @station_name = station_name
+  def initialize(name)
+    @name = name
     @trains   = []
   end
 
   def self.station_add(station)
-    @stations.store(station.station_name, station)
+    @stations.store(station.name, station)
   end
 
   def self.stations_show_all
@@ -66,11 +66,11 @@ class Station
   end
 
   def show_all_trains
-    self.trains.each { |train| puts "На станции #{self.station_name} поезд #{train}"}
+    self.trains.each { |train| puts "На станции #{self.name} поезд #{train}"}
   end
 
   def show_all_trains_by_type(type)
-    self.trains.each { |train| puts "На станции #{self.station_name} поезд #{train}. Тип поезда #{type}" if train.type == type}
+    self.trains.each { |train| puts "На станции #{self.name} поезд #{train}. Тип поезда #{type}" if train.type == type}
   end
 
   def train_go_away(train)
@@ -81,17 +81,19 @@ class Station
 end
 
 class Route
-  attr_reader :routes, :route, :station_first, :station_last
+  attr_reader :routes, :route, :stations# :station_first, :station_last
 
-  @route = []
+  #@route = []
   @routes = {}
 
   def initialize(station_first, station_last)
-    @route = [station_first, station_last]
+    #@route = [station_first, station_last]
+    @stations = [station_first, station_last]
   end
 
   def self.route_add_to_routes(route_name, route)
-    @routes.store(route_name, route)    
+    #@routes.store(route_name, route)
+    @stations.store(route_name, route)    
   end
 
   def self.routes_show_all
@@ -99,22 +101,27 @@ class Route
   end
 
   def route_show_stations
-    @route.each { |station| puts station}
+    #@route.each { |station| puts station}
+    @stations#.each { |station| puts station}
   end
 
   def route_add_station(station)
-    if @route.include?(station)
+    #if @route.include?(station)
+    if @stations.include?(station)
       puts "Есть уже такая станция"
     else
-      @route.insert(1, station)
+      #@route.insert(1, station)
+      @stations.insert(-1, station)
     end
   end
 
   def route_del_station(station)
-    if !@route.include?(station)
+    #if !@route.include?(station)
+    if !@stations.include?(station)
       puts "Такой станции нет"
     else
-      @route.delete(station)
+      #@route.delete(station)
+      @stations.delete(station)
     end
   end
 
@@ -131,8 +138,8 @@ class Train
     @type           = type
     @carriges_count = carriges_count
     @speed          = 0
-    @route          = nil
-    @station        = nil
+    #@route          = nil
+    #@station        = nil
   end
 
   def self.train_add_to_trains(train)
@@ -169,66 +176,101 @@ class Train
   end
 
   def carriage_count_up
-    self.carriges_count += 1
+    if self.speed == 0
+      self.carriges_count += 1
+    else
+      puts "Бегущему поезду вагон не добавить)))"
+    end
   end
 
   def carriage_count_down
-    if self.carriges_count <= 0
-      puts "Поезд ничего не знает про вагоны-призраки"
+    if self.carriges_count <= 0 || self.speed != 0
+      puts "Поезд ничего не знает про вагоны-призраки, да и скорость для добавления вагона должна быть = 0"
     else
       self.carriges_count -= 1
     end
   end
 
-  def train_add_route(route)
-    @route = route
-  end
+  #def train_add_route(route)
+  #  @route = route
+  #end
 
-  def train_goto_station(station)
-    #if self.route.nil? || !self.route.route.include?(station)
-    #  puts "Поезда не летают между станциями"
-    @station = station
-  end
+  #def train_goto_station(station)
+    ##if self.route.nil? || !self.route.route.include?(station)
+    ##  puts "Поезда не летают между станциями"
+  #  @station = station
+  #end
 
   def train_next_station
-    if !self.route.route.include?(self.station) 
+    if !self.route.stations.include?(self.station) 
       puts "Текущей станции нет в маршруте" 
-    elsif self.route.route.find_index(self.station) >= self.route.route.count-1
+    elsif self.route.stations.find_index(self.station) >= self.route.stations.count-1
       puts "Уже конечная"
     else
       puts "Текущая станция #{self.station}"
-      puts "Чух-чух-чух... поезд прибывает на станцию #{self.route.route[self.route.route.find_index(self.station)+1]}"  
-      self.station = self.route.route[self.route.route.find_index(self.station)+1]
+      #puts "Чух-чух-чух... поезд прибывает на станцию #{self.route.stations[self.route.stations.find_index(self.station)+1]}"  
+      #self.station = self.route.stations[self.route.stations.find_index(self.station)+1]
+      puts "Чух-чух-чух... поезд прибывает на станцию #{self.route.stations.find_index(self.station)+1}"  
+      self.station = self.route.stations.find_index(self.station)+1
       puts "Поезд причухал на станцию  #{self.station}"
     end
   end
 
   def train_prev_station
-    if !self.route.route.include?(self.station) 
-      puts "Текущей станции нет в маршруте" 
-      
-    elsif self.route.route.find_index(self.station) <= 0
+    if self.station.between?(0,self.route.stations.count-1) && self.station == 0
       puts "Уже начальная"
     else
-      puts "Текущая станция #{self.station}"
-      puts "Чух-чух-чух... поезд прибывает на станцию #{self.route.route[self.route.route.find_index(self.station)-1]}"  
-      self.station = self.route.route[self.route.route.find_index(self.station)]
+      #puts "Текущая станция #{self.station}"
+      #puts "Чух-чух-чух... поезд прибывает на станцию #{self.route.stations[self.route.stations.find_index(self.station)-1]}"  
+      #self.station = self.route.stations[self.route.stations.find_index(self.station)]
+      puts "Чух-чух-чух... поезд прибывает на станцию #{self.route.stations.find_index(self.station)-1}"  
+      self.station = self.route.stations.find_index(self.station)
       puts "Поезд причухал на станцию  #{self.station}"
     end
   end
 
-  def train_around_station
-    if !self.route.route.include?(self.station) 
-      puts "Текущей станции нет в маршруте" 
-      
-    elsif self.route.route.find_index(self.station) <= 0 || self.route.route.find_index(self.station) >= self.route.route.count-1
-      puts "Уже начальная/конечная"
+#  def train_around_station
+#    if !self.route.stations.include?(self.station) 
+#      puts "Текущей станции нет в маршруте" 
+#    elsif self.route.stations.find_index(self.station) <= 0 || self.route.stations.find_index(self.station) >= self.route.stations.count-1
+#      puts "Уже начальная/конечная"
+#    else
+#      puts "Текущая станция #{self.station}"
+#      puts "Предыдущая станция: #{self.route.stations[self.route.stations.find_index(self.station)-1]}"
+#      puts "Следующая станция: #{self.route.stations[self.route.stations.find_index(self.station)+1]}"
+#    end
+#  end
+
+  def traint_current_station(station)
+    self.route.stations.each_with_index { |station, index| puts "На маршруте есть номер станции: #{index}" }
+    if self.route.stations.index(station).between?(0,self.route.stations.count)
+      self.station = self.route.stations.find_index(station)
+      puts "Текущая станция № #{self.station}"
     else
-      puts "Текущая станция #{self.station}"
-      puts "Предыдущая станция: #{self.route.route[self.route.route.find_index(self.station)-1]}"
-      puts "Следующая станция: #{self.route.route[self.route.route.find_index(self.station)+1]}"
+      puts "Неправильно ты, Дядя Фёдор, номера станции готовишь"
     end
   end
+
+  def train_show_station_next
+    if self.route.stations.count-self.station < 0
+      puts "Текущей станции нет в маршруте"
+    elsif self.route.stations.count-1 == self.station
+      puts "Уже конечная"
+    else
+      puts "Следующая станция: #{self.station+1}"
+    end
+  end
+
+  def train_show_station_prev
+    if self.route.stations.count-self.station < 0
+      puts "Текущей станции нет в маршруте" 
+    elsif self.station.zero?
+      puts "Уже начальная"
+    else
+      puts "Предыдущая станция: #{self.station-1}"
+    end
+  end
+
 
 end
 
@@ -263,16 +305,24 @@ puts "Все поезда"
 Train.trains_show_all
 
 puts "Добавлен маршрут к поезду"
- t1.train_add_route(r2)
+ #t1.train_add_route(r2)
+ t1.route=(r2)
+
 puts "Поезд #{t1.inspect}"
 
-t1.train_goto_station(s1)
+#t1.train_goto_station(s1)
+t1.station=(s1)
 puts t1.station
+
+t1.traint_current_station(s1)
 
 t1.train_next_station
 puts t1.station
 
-t1.train_around_station
+#t1.train_around_station
+
+t1.train_show_station_next
+t1.train_show_station_prev
 
 t1.train_prev_station
 puts t1.station
