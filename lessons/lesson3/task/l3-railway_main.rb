@@ -198,14 +198,19 @@ class Train
     end
   end
 
-  def current_station(station)
-    route.stations.each_with_index { |station, index| puts "На маршруте есть номер станции: #{index}" }
-    if route.stations.index(station).between?(0,route.stations.count)
-      self.station = route.stations.find_index(station)
-      puts "Текущая станция № #{self.station}"
-    else
-      puts "Неправильно ты, Дядя Фёдор, номера станции готовишь"
-    end
+  #def current_station(station)
+  #  route.stations.each_with_index { |station, index| puts "На маршруте есть номер станции: #{index}" }
+  #  if !station.between?(0,route.stations.count-1)
+  #    puts "Текущей станции нет в маршруте" 
+  #  elsif
+  #    self.station = station
+  #    puts "Текущая станция № #{station}"
+  #  else
+  #    puts "Неправильно ты, Дядя Фёдор, номера станции готовишь"
+  #  end
+  #end
+  def show_current_station
+    puts "Текущая станция: #{station}"
   end
 
   def show_station_next
@@ -268,10 +273,10 @@ t1.route=(r2)
 
 puts "Поезд #{t1.inspect}"
 
-t1.station=(s1)
+t1.station=0
 puts t1.station
 
-t1.current_station(s1)
+t1.show_current_station
 
 puts "forward"
 t1.forward
