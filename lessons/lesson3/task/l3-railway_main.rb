@@ -62,7 +62,6 @@ class Station
 
   def train_add(train)
     trains << train
-    train.station = self
   end
 
   def show_all_trains
@@ -116,7 +115,7 @@ class Route
 end
 
 class Train
-  attr_accessor :trains, :number, :type, :carriges_count, :speed, :route, :station
+  attr_accessor :trains, :number, :type, :carriges_count, :speed, :route, :current_station_id
 
   @trains = {}
 
@@ -177,24 +176,24 @@ class Train
   end
 
   def forward
-    if !station.between?(0,route.stations.count-1)
+    if !current_station_id.between?(0,route.stations.count-1)
       puts "Текущей станции нет в маршруте" 
-    elsif station >= route.stations.count-1
+    elsif current_station_id >= route.stations.count-1
       puts "Уже конечная"
     else
-      puts "Текущая станция #{station}"
-      self.station += 1
-      puts "Чух-чух-чух... поезд причухал на станцию #{station}" 
+      puts "Текущая станция #{route.stations[current_station_id]}"
+      self.current_station_id += 1
+      puts "Чух-чух-чух... поезд причухал на станцию #{route.stations[current_station_id]}" 
     end
   end
 
   def backward
-    if station.between?(0,route.stations.count-1) && self.station == 0
+    if current_station_id.between?(0,route.stations.count-1) && current_station_id == 0
       puts "Уже начальная"
     else
-      puts "Текущая станция #{station}"
-      self.station -= 1
-      puts "Чух-чух-чух... поезд причухал на станцию #{station}"  
+      puts "Текущая станция #{route.stations[current_station_id]}"
+      self.current_station_id -= 1
+      puts "Чух-чух-чух... поезд причухал на станцию #{route.stations[current_station_id]}"  
     end
   end
 
@@ -210,26 +209,26 @@ class Train
   #  end
   #end
   def show_current_station
-    puts "Текущая станция: #{station}"
+    puts "Текущая станция: #{route.stations[current_station_id]}"
   end
 
   def show_station_next
-    if route.stations.count-self.station < 0
+    if route.stations.count-current_station_id < 0
       puts "Текущей станции нет в маршруте"
-    elsif route.stations.count-1 == self.station
+    elsif route.stations.count-1 == current_station_id
       puts "Уже конечная"
     else
-      puts "Следующая станция: #{self.station+1}"
+      puts "Следующая станция: #{route.stations[current_station_id+1]}"
     end
   end
 
   def show_station_prev
-    if route.stations.count-self.station < 0
+    if route.stations.count-current_station_id < 0
       puts "Текущей станции нет в маршруте" 
-    elsif self.station.zero?
+    elsif current_station_id.zero?
       puts "Уже начальная"
     else
-      puts "Предыдущая станция: #{self.station-1}"
+      puts "Предыдущая станция: #{route.stations[current_station_id-1]}"
     end
   end
 
@@ -273,21 +272,23 @@ t1.route=(r2)
 
 puts "Поезд #{t1.inspect}"
 
-t1.station=0
-puts t1.station
+t1.current_station_id=0
+puts t1.current_station_id
 
 t1.show_current_station
 
 puts "forward"
 t1.forward
-puts t1.station
+puts t1.current_station_id
 
 t1.show_station_next
 t1.show_station_prev
 
 t1.backward
-puts t1.station
+puts t1.current_station_id
 
+puts "train t1"
+puts t1.inspect
 s1.train_add(t1)
 
 puts "s1: #{s1.inspect}"
