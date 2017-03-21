@@ -1,29 +1,31 @@
 class Car
-  attr_accessor :speed
+  attr_reader :current_rpm
 
-  attr_reader :engine_volume
-
-  def initialize(speed = 0, engine_volume)
-    @speed = speed
-    @engine_volume = engine_volume
+  def initialize
+    @current_rpm = 0
   end
 
   def start_engine
-    puts "Wroom!"
+    start_engine! if engine_stopped?
   end
 
-  def beep
-    puts "Beep-beep"
+  protected
+
+  attr_writer :current_rpm
+
+  #INITIAL_RPM = 500
+  def initial_rpm
+    700
+  end
+
+  def engine_stopped?
+    current_rpm.zero?
+  end
+
+  def start_engine!
+    self.current_rpm = initial_rpm
   end
 
   def stop
-    self.speed = 0
-  end
-
-  def go
-    self.speed = 50
-    beep
   end
 end
-
-#при присвоении, для использования метода сеттера нужно явно указывать обращение к объекту self.
