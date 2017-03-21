@@ -54,11 +54,16 @@ class Train
 
 #если поезд стоит  - добавить вагон
   def carriage_add(number)
-    if self.speed == 0
-      @carriages << Carriage.new(number)
+    puts @carriages.include?(number)
+    puts @carriages.eql?(number)
+    puts self.@carriages[0][@number]
+
+    if self.speed == 0 #&& !self.carriages.include?(number)
+      @carriages << Object.const_get(self.type.to_s.gsub('Train','')+"Carriage").new(number)
+    else
+      puts "Вагоны добавляем только к типовым поездам тчк"      
     end
   end
-
 
 #то, что должны наследовать потомки
 protected
