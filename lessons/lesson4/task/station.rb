@@ -20,7 +20,7 @@ class Station
     @stations.each { |station| puts "#{station.inspect}" }
   end
 
-  def self.include_station?(station)
+  def self.station_include?(station)
     @stations.include?(station)
   end
 

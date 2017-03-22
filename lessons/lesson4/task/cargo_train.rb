@@ -1,5 +1,6 @@
 class CargoTrain < Train
- def get_type
-    puts @type
-  end
+ #def get_type
+ #   puts @type
+ # end
+
 end

@@ -22,33 +22,28 @@ class Route
     @routes.delete(route_name) if @routes.include?(route_name)
   end
 
-  def self.include_route?(route_name)
+  def self.route_include?(route_name)
     @routes.keys.include?(route_name)
   end
-
   #+
-  #def self.add_station(station)
-  #  if @stations.include?(station)
-  #    puts "Есть уже такая станция"
-  #  else
-  #    @stations.insert(-1, station)
-  #  end
-  #end
-  def self.add_station(station, route)
-      
-    if @stations.include?(station)
+  def self.add_station(route, station)
+    if @routes[route].stations.include?(station)
       puts "Есть уже такая станция"
     else
-      route.@stations.insert(-1, station)
+      @routes[route].stations.insert(-2, station)
+    end
+  end
+  #+
+  def self.remove_station(route, station)
+    if !@routes[route].stations.include?(station)
+      puts "Такой станции нет"
+    else
+      @routes[route].stations.delete(station)
     end
   end
 
-  #+
-  def self.remove_station(station)
-    if !@stations.include?(station)
-      puts "Такой станции нет"
-    else
-      @routes.delete(station)
-    end
+  def self.find_route(route_name)
+    @routes[route_name]
   end
+
 end

@@ -19,8 +19,8 @@
 # Создать программу в файле main.rb, которая будет позволять пользователю через текстовый интерфейс делать следующее:
 #+      - Создавать станции
 #+      - Создавать поезда
-#      - Создавать маршруты и управлять станциями в нем (добавлять, удалять)
-#      - Назначать маршрут поезду
+#+      - Создавать маршруты и управлять станциями в нем (добавлять, удалять)
+#+      - Назначать маршрут поезду
 #      - Добавлять вагоны к поезду
 #      - Отцеплять вагоны от поезда
 #      - Перемещать поезд по маршруту вперед и назад
@@ -123,7 +123,7 @@ class Menu
         puts "Введи имя конца"
         station_last = gets.chomp
 
-        if Station.include_station?(station_first) && Station.include_station?(station_last) && !Route.include_route?(route_name)
+        if Station.station_include?(station_first) && Station.station_include?(station_last) && !Route.route_include?(route_name)
           Route.add_to_routes(route_name, Route.new(station_first,station_last))
         else
           puts "Нет станции такой или маршрута тоже... нет"
@@ -132,7 +132,7 @@ class Menu
       when 2
         puts "Имя. Введи его имя!"
         route_name = gets.chomp
-        if !Route.include_route?(route_name)
+        if !Route.route_include?(route_name)
           puts "Ты чего удалять-то пытаешься... нету его и не было никогда"
         else
           puts "Отправляйся в nil, маршрут #{route_name}"
@@ -149,16 +149,21 @@ class Menu
         route_name = gets.chomp
         puts "Давай сюда имя станции"
         station_name = gets.chomp
-        
-
-        #if Station.include_station?(station_name)
-        #  puts "Этого уже и так много"
-        #else
-        Route.add_station(station_name)
-        #end
+        if Route.route_include?(route_name)
+          Route.add_station(route_name, station_name)
+        else
+          puts "Нееееттт!!! Нет его!"
+        end
       when 5
+        puts "А какой-такой маршрут"
+        route_name = gets.chomp
         puts "Скажи имя грешника"
-        Route.remove_station(station_name)
+        station_name = gets.chomp
+        if Route.route_include?(route_name)
+          Route.remove_station(route_name, station_name)
+        else
+          puts "Не знаю таких"
+        end
       else 
         puts "Станции такого не умеют"  
       end
@@ -175,6 +180,9 @@ class Menu
       puts "Добавить. Жми 1"
       puts "Удалить. Жми 2"
       puts "Явитесь, поезда! Жми 3"
+      puts "Послать поезд по маршруту. Жми 4"
+      puts "Добавить вагон балласта. Жми 5"
+      puts "Уничтожить балласта вагон. Жми 6"
       puts "Для выхода введи exit"
       key = gets.chomp
 
@@ -203,19 +211,41 @@ class Menu
           puts "Опять пытаешь обмануть программу?"
         end
       when 2
-        puts "Имя. Введи его имя!"
-        route_name = gets.chomp
-        if !Route.include_route?(route_name)
-          puts "Ты чего удалять-то пытаешься... нету его и не было никогда"
+        puts "Поезда все."
+        Train.trains_show_all
+        puts "Имя. Введи имя для казни!"
+        train_name = gets.chomp
+        if Train.train_include?(train_name) #|| (Train.train_include?(train_name) && ("CargoTrain" != Train.get_type(train_name).to_s))
+          Train.remove_from_trains(train_name)
         else
-          puts "Отправляйся в nil, маршрут #{route_name}"
-          Route.remove_from_routes(route_name)
+          puts "Таких не держим"
         end
       when 3
         puts "Поезда. Месть павших"
         Train.trains_show_all
+      when 4
+        Train.trains_show_all
+        puts "Выбери поезд"
+        train_name  = gets.chomp
+        Route.show_all
+        puts "Куда же его послать?"
+        route_name  = gets.chomp
+        if Train.train_include?(train_name) && Route.route_include?(route_name)
+          Train.add_route(train_name, route_name)
+        else
+          puts "Поезд из другой реальности и маршрут никак не разобрать"
+        end
+      when 5
+        Train.trains_show_all
+        puts "Выбери уже поезд"
+        train_name  = gets.chomp
+        puts "Ну и вагон назови"
+        carriage_name = gets.chomp
+        Train.carriage_add(train_name, carriage_name)
+        Carriage.show_carriages.inspect
+      when 6
       else 
-        puts "Станции такого не умеют"  
+        puts "Поезда так не умеют"  
       end
     end
   end

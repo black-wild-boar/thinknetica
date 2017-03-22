@@ -1,8 +1,9 @@
 class Train
-  attr_accessor :trains, :number, :route
+  attr_accessor :trains, :number, :route, :carriages
   attr_reader :type, :speed, :current_station_id
 
   @trains = {}
+  
 
   def initialize(number)
     @number         = number
@@ -57,11 +58,23 @@ class Train
     @trains.store(train_name, train)
   end
 
-  def carriage_add(carriage)
-    if self.speed == 0 && !@carriages.include?(carriage) && self.type.to_s.gsub('Train','') == carriage.class.to_s.gsub('Carriage','')
+  #+
+  def self.remove_from_trains(train_name)
+    @trains.delete(train_name)
+  end
+
+ def self.find_train(train_name)
+    @trains[train_name]
+  end
+
+  def self.carriage_add(train_name, carriage_name)
+#    if @trains[train_name].speed == 0 && !@trains[train_name].carriages.include?(carriage_name) && @trains[train_name].type.to_s.gsub('Train','') == carriage_name.class.to_s.gsub('Carriage','')
       #т.о. можно обратиться к классу, через данные в строке. ВЕЩЬ!
       #@carriages << Object.const_get(self.type.to_s.gsub('Train','')+"Carriage").new(carriage)
-      @carriages << carriage
+    puts @trains[train_name].carriages.class
+    if @trains[train_name].speed == 0 && !@trains[train_name].carriages.include?(carriage_name)
+      @trains[train_name].carriages << Carriage.carriage_add(@trains[train_name].type, Carriage.new(carriage_name))
+    puts @trains[train_name].carriages.class
     else
       puts "Разные они совсем... или пытаются переобуться на бегу"      
     end
@@ -74,6 +87,8 @@ class Train
       puts "Поезд такой вагон не знает или Индиана Джонс пытается отцепить вагоны на бегу"      
     end
   end
+
+
 
 #то, что должны наследовать потомки
 protected
@@ -92,6 +107,14 @@ protected
     else
       @speed -= speed
       puts "Поезд остановлен" if self.speed == 0  
+    end
+  end
+  #+
+  def self.add_route(train_name, route_name)
+    if @trains.include?(train_name) && Route.route_include?(route_name)
+      @trains[train_name].route = Route.find_route(route_name)
+    else
+      puts "Тут маршрутов нет и поездов тоже нет. Безжизненная пустыня"
     end
   end
 
