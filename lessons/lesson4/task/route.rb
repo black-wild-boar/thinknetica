@@ -4,30 +4,51 @@ class Route
   @routes = {}
 
   def initialize(station_first, station_last)
-    @stations = [station_first, station_last]
+    @stations= [station_first, station_last]
   end
 
-  def self.route_add_to_routes(route_name, route)
-    @stations.store(route_name, route)    
+  #+
+  def self.add_to_routes(route_name, route)
+    @routes.store(route_name, route)
   end
 
-  def self.routes_show_all
+  #+
+  def self.show_all
     @routes.each { |route| puts "Маршрут: #{route.inspect}"}
   end
 
-  def route_add_station(station)
+#+
+  def self.remove_from_routes(route_name)
+    @routes.delete(route_name) if @routes.include?(route_name)
+  end
+
+  def self.include_route?(route_name)
+    @routes.keys.include?(route_name)
+  end
+
+  #+
+  #def self.add_station(station)
+  #  if @stations.include?(station)
+  #    puts "Есть уже такая станция"
+  #  else
+  #    @stations.insert(-1, station)
+  #  end
+  #end
+  def self.add_station(station, route)
+      
     if @stations.include?(station)
       puts "Есть уже такая станция"
     else
-      @stations.insert(-1, station)
+      route.@stations.insert(-1, station)
     end
   end
 
-  def route_del_station(station)
+  #+
+  def self.remove_station(station)
     if !@stations.include?(station)
       puts "Такой станции нет"
     else
-      @stations.delete(station)
+      @routes.delete(station)
     end
   end
 end

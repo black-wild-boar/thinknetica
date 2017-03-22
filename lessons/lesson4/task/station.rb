@@ -12,8 +12,16 @@ class Station
     @stations.store(station.name, station)
   end
 
+  def self.station_remove(station)
+    @stations.delete(station) if @stations.include?(station)
+  end
+
   def self.stations_show_all
     @stations.each { |station| puts "#{station.inspect}" }
+  end
+
+  def self.include_station?(station)
+    @stations.include?(station)
   end
 
   def train_add(train)

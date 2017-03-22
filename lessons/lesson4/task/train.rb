@@ -1,27 +1,30 @@
 class Train
-  attr_accessor :trains, :number, :route #:carriges_count
+  attr_accessor :trains, :number, :route
   attr_reader :type, :speed, :current_station_id
 
   @trains = {}
 
-  def initialize(number, carriges_count)
+  def initialize(number)
     @number         = number
-    @carriges_count = carriges_count
     @speed          = 0
-    @type = self.class
-    @carriages = []
+    @type           = self.class
+    @carriages      = []
   end
-
+  #+
   def self.trains_show_all
     @trains.each { |train| puts "#{train}"}
+  end
+  #+
+  def self.train_include?(train_name)
+    @trains.keys.include?(train_name)
+  end
+
+  def self.get_type(train_name)
+    @trains[train_name].type
   end
 
   def speed_show
     puts "Текущая скорость: #{@speed}"
-  end
-
-  def carriage_count
-    puts "Вагонов в поезде: #{@carriges_count}"
   end
 
   def show_current_station
@@ -48,20 +51,27 @@ class Train
     end
   end
 
-  def self.train_add_to_trains(train)
-    @trains.store(train.number, train)
+  #+
+  def self.add_to_trains(train_name, train)
+    #@trains.store(train.number, train)
+    @trains.store(train_name, train)
   end
 
-#если поезд стоит  - добавить вагон
-  def carriage_add(number)
-    puts @carriages.include?(number)
-    puts @carriages.eql?(number)
-    puts self.@carriages[0][@number]
-
-    if self.speed == 0 #&& !self.carriages.include?(number)
-      @carriages << Object.const_get(self.type.to_s.gsub('Train','')+"Carriage").new(number)
+  def carriage_add(carriage)
+    if self.speed == 0 && !@carriages.include?(carriage) && self.type.to_s.gsub('Train','') == carriage.class.to_s.gsub('Carriage','')
+      #т.о. можно обратиться к классу, через данные в строке. ВЕЩЬ!
+      #@carriages << Object.const_get(self.type.to_s.gsub('Train','')+"Carriage").new(carriage)
+      @carriages << carriage
     else
-      puts "Вагоны добавляем только к типовым поездам тчк"      
+      puts "Разные они совсем... или пытаются переобуться на бегу"      
+    end
+  end
+
+  def carriage_remove(carriage)
+    if self.speed == 0 && @carriages.include?(carriage) 
+      @carriages.delete(carriage)
+    else
+      puts "Поезд такой вагон не знает или Индиана Джонс пытается отцепить вагоны на бегу"      
     end
   end
 
