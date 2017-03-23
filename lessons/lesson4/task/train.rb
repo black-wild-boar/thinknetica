@@ -18,6 +18,7 @@ class Train
   def self.train_include?(train_name)
     @trains.keys.include?(train_name)
   end
+
 #
   def self.get_type(train_name)
     @trains[train_name].type

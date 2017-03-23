@@ -29,7 +29,6 @@ protected
 #        puts "Номер вагона уже есть в перечне"
 #      end
 #    end
-
     if @carriages.empty?
       puts "Безжизненная пустыня 2"
       @carriages[carriage_name.type] = []

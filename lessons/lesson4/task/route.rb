@@ -45,5 +45,4 @@ class Route
   def self.find_route(route_name)
     @routes[route_name]
   end
-
 end

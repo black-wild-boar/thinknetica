@@ -40,4 +40,5 @@ class Station
     puts "Пока... паравозик!"
     trains.delete(train)
   end
+  
 end

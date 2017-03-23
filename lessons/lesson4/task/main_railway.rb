@@ -283,36 +283,3 @@ class Menu
 end
 
 Menu.main_menu
-
-#t1 = Train.new(101)
-#p1 = PassengerTrain.new(201)
-#p2 = PassengerTrain.new(202)
-#c1 = CargoTrain.new(301)
-
-#puts t1
-#puts p1
-#puts p2
-#puts c1
-
-#pc1 = PassengerCarriage.new(1001)
-#pc2 = PassengerCarriage.new(1002)
-#cc1 = CargoCarriage.new(2001)
-#cc2 = CargoCarriage.new(2002)
-
-#p1.carriage_add(pc1)
-#p2.carriage_add(cc1)
-
-#p1.carriage_add(pc2)
-##p1.carriage_add(131)
-
-#puts "1 #{Carriage.show_carriages}"
-#puts t1.inspect
-#puts p1.inspect
-#puts p2.inspect
-#puts c1.inspect
-
-
-##Train.train_add_to_trains(t1)
-##Train.train_add_to_trains(p1)
-
-##puts "2 #{Train.trains_show_all}"
