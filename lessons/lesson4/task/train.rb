@@ -1,10 +1,9 @@
 class Train
-  attr_accessor :trains, :number, :route, :carriages
-  attr_reader :type, :speed, :current_station_id
+  attr_accessor :trains, :number, :route, :carriages, :current_station_id
+  attr_reader :type, :speed
 
   @trains = {}
-  
-
+ 
   def initialize(number)
     @number         = number
     @speed          = 0
@@ -19,10 +18,46 @@ class Train
   def self.train_include?(train_name)
     @trains.keys.include?(train_name)
   end
-
+#
   def self.get_type(train_name)
     @trains[train_name].type
   end
+
+  def self.check_station_on_route(train_name, station)
+    #при условии, что маршрут обязательно должен быть заполнен
+    if @trains[train_name].route.nil?
+      puts "Поезд не имеет маршрута. Он в поле"
+    elsif !@trains[train_name].route.stations.include?(station)
+      puts "Этой станции не наблюдается на маршруте"
+    else
+      puts "Внезапно, станция есть на маршруте."
+      true 
+    end
+  end
+
+  #+
+  def self.set_current_station(train_name, station)
+    @trains[train_name].current_station_id = @trains[train_name].route.stations.index(station)+1 if check_station_on_route(train_name, station) == true 
+  end
+
+#конечно же можно было просто += и -= но например нужно чтобы поезд проехал на определенную станцию, но минуя несколько
+#+
+  def self.next_station(train_name, station)
+    if @trains[train_name].route.stations.index(@trains[train_name].route.stations.last) != @trains[train_name].current_station_id
+      @trains[train_name].current_station_id += 1 
+    else
+      puts "Конечная. На выход"
+    end
+  end
+#+
+  def self.prev_station(train_name, station)
+    if @trains[train_name].route.stations.index(@trains[train_name].route.stations.first) != @trains[train_name].current_station_id
+      @trains[train_name].current_station_id -= 1 
+    else
+      puts "Станция 1"
+    end
+  end
+
 
   def speed_show
     puts "Текущая скорость: #{@speed}"
@@ -32,25 +67,25 @@ class Train
     puts "Текущая станция: #{route.stations[current_station_id]}"
   end
 
-  def show_station_next
-    if route.stations.count-current_station_id < 0
-      puts "Текущей станции нет в маршруте"
-    elsif route.stations.count-1 == current_station_id
-      puts "Уже конечная"
-    else
-      puts "Следующая станция: #{route.stations[current_station_id+1]}"
-    end
-  end
+#  def show_station_next
+#    if route.stations.count-current_station_id < 0
+#      puts "Текущей станции нет в маршруте"
+#    elsif route.stations.count-1 == current_station_id
+#      puts "Уже конечная"
+#    else
+#      puts "Следующая станция: #{route.stations[current_station_id+1]}"
+#    end
+#  end
 
-  def show_station_prev
-    if route.stations.count-current_station_id < 0
-      puts "Текущей станции нет в маршруте" 
-    elsif current_station_id.zero?
-      puts "Уже начальная"
-    else
-      puts "Предыдущая станция: #{route.stations[current_station_id-1]}"
-    end
-  end
+#  def show_station_prev
+#    if route.stations.count-current_station_id < 0
+#      puts "Текущей станции нет в маршруте" 
+#    elsif current_station_id.zero?
+#      puts "Уже начальная"
+#    else
+#      puts "Предыдущая станция: #{route.stations[current_station_id-1]}"
+#    end
+#  end
 
   #+
   def self.add_to_trains(train_name, train)
@@ -63,28 +98,28 @@ class Train
     @trains.delete(train_name)
   end
 
- def self.find_train(train_name)
-    @trains[train_name]
-  end
-
+#+
   def self.carriage_add(train_name, carriage_name)
 #    if @trains[train_name].speed == 0 && !@trains[train_name].carriages.include?(carriage_name) && @trains[train_name].type.to_s.gsub('Train','') == carriage_name.class.to_s.gsub('Carriage','')
       #т.о. можно обратиться к классу, через данные в строке. ВЕЩЬ!
       #@carriages << Object.const_get(self.type.to_s.gsub('Train','')+"Carriage").new(carriage)
-    puts @trains[train_name].carriages.class
-    if @trains[train_name].speed == 0 && !@trains[train_name].carriages.include?(carriage_name)
-      @trains[train_name].carriages << Carriage.carriage_add(@trains[train_name].type, Carriage.new(carriage_name))
-    puts @trains[train_name].carriages.class
+    
+    #if @trains[train_name].speed == 0  #&& !@trains[train_name].carriages.include?(carriage_name)
+      #@trains[train_name].carriages << Carriage.carriage_add(Carriage.new(carriage_name))
+    if @trains[train_name].speed == 0 
+      Carriage.carriage_add(Carriage.new(carriage_name))
+      @trains[train_name].carriages << carriage_name
+    #  @trains[train_name].carriages = Carriage.carriage_add(Carriage.new(carriage_name)) 
     else
-      puts "Разные они совсем... или пытаются переобуться на бегу"      
+      puts "Бегущий поезд лани подобен"      
     end
   end
 
-  def carriage_remove(carriage)
-    if self.speed == 0 && @carriages.include?(carriage) 
-      @carriages.delete(carriage)
+  def self.carriage_remove(train_name, carriage)
+    if @trains[train_name].speed == 0 
+      @trains[train_name].carriages.delete(carriage)
     else
-      puts "Поезд такой вагон не знает или Индиана Джонс пытается отцепить вагоны на бегу"      
+      puts "Индиана Джонс пытается отцепить вагоны на бегу"      
     end
   end
 
@@ -159,7 +194,7 @@ protected
 
 private
 #поезду не рекомендуется самостоятельно менять тип, скорость и текущую станцию
-  attr_writer :type, :speed, :current_station_id 
+  attr_writer :type, :speed
   attr_accessor :trains
 end
 

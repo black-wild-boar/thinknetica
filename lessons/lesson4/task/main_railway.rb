@@ -21,8 +21,8 @@
 #+      - Создавать поезда
 #+      - Создавать маршруты и управлять станциями в нем (добавлять, удалять)
 #+      - Назначать маршрут поезду
-#      - Добавлять вагоны к поезду
-#      - Отцеплять вагоны от поезда
+#+      - Добавлять вагоны к поезду
+#+      - Отцеплять вагоны от поезда
 #      - Перемещать поезд по маршруту вперед и назад
 #      - +Просматривать список станций и -список поездов на станции
 
@@ -183,6 +183,9 @@ class Menu
       puts "Послать поезд по маршруту. Жми 4"
       puts "Добавить вагон балласта. Жми 5"
       puts "Уничтожить балласта вагон. Жми 6"
+      puts "Отправить поезд на станцию в даль. Жми 7"
+      puts "Перевести поезд на следующую станцию. Жми 8"
+      puts "Перевести поезд на предыдущую станцию. Жми 9"
       puts "Для выхода введи exit"
       key = gets.chomp
 
@@ -242,10 +245,37 @@ class Menu
         puts "Ну и вагон назови"
         carriage_name = gets.chomp
         Train.carriage_add(train_name, carriage_name)
-        Carriage.show_carriages.inspect
+        puts Carriage.show_carriages.inspect
       when 6
+        Train.trains_show_all
+        puts "Выбери уже поезд"
+        train_name  = gets.chomp
+        puts "Вагон на удаление"
+        carriage_name = gets.chomp
+        Train.carriage_remove(train_name, carriage_name)
+      when 7
+        puts "А пошлю ка я поезд"
+        train_name  = gets.chomp
+        puts "На станцию"
+        station_name  = gets.chomp
+
+        Train.set_current_station(train_name, station_name)
+      when 8
+        puts "Выбери поезд"
+        train_name  = gets.chomp
+        puts "Имя станции"
+        station_name  = gets.chomp
+
+        Train.prev_station(train_name, station_name)
+      when 9
+        puts "Выбери поезд"
+        train_name  = gets.chomp
+        puts "Имя станции"
+        station_name  = gets.chomp
+
+        Train.next_station(train_name, station_name)
       else 
-        puts "Поезда так не умеют"  
+        puts "Поезда так не умеют" 
       end
     end
   end
