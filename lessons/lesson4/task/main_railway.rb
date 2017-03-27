@@ -40,7 +40,11 @@ require_relative 'cargo_carriage'
 
 class Menu
 
-  def self.main_menu
+@@all_stations = {}
+@@all_routes = {}
+@@all_trains = {}
+
+  def main_menu
     key = ''
 
     while key != 'exit' do
@@ -68,7 +72,7 @@ class Menu
     end
   end
 
-  def self.stations_menu
+  def stations_menu
 
     key = ''
     while key != 'exit' do
@@ -84,20 +88,28 @@ class Menu
       case key.to_i 
       when 1
         puts "Введи имя этой прекрасной станции"
-        Station.station_add(Station.new(gets.chomp))
+        station_name = gets.chomp
+        @@all_stations[station_name] = Station.new(station_name)
       when 2
         puts "Введи имя этой прекрасной станции"
-        Station.station_remove(gets.chomp)
+        station_name = gets.chomp
+        if @@all_stations.keys.include?(station_name)
+          puts "daaaa"
+          puts @@all_stations[station_name]
+          @@all_stations.delete(station_name)
+        else
+          puts "neeet"
+        end
       when 3
         puts "Узри же, смертный, ярость станций"
-        Station.stations_show_all
+        puts @@all_stations
       else 
         puts "Станции такого не умеют"  
       end
     end
   end
 
-  def self.routes_menu
+  def routes_menu
 
     key = ''
     while key != 'exit' do
@@ -116,44 +128,47 @@ class Menu
       when 1
         puts "Как назвать хочешь ты его?"
         route_name = gets.chomp
-        puts "Станций перечень"
-        Station.stations_show_all
+        puts "Станций перечень #{@@all_stations}"
         puts "Введи имя начала"
         station_first = gets.chomp
         puts "Введи имя конца"
         station_last = gets.chomp
 
-        if Station.station_include?(station_first) && Station.station_include?(station_last) && !Route.route_include?(route_name)
-          Route.add_to_routes(route_name, Route.new(station_first,station_last))
+        if @@all_stations.keys.include?(station_first) && @@all_stations.keys.include?(station_last) && !@@all_routes.include?(route_name)
+          puts "123"
+          puts @@all_stations.keys.include?(station_first)
+          puts "321"
+          puts @@all_stations.keys.include?(station_last)
+
+          @@all_routes[route_name] = Route.new(station_first,station_last)
         else
-          puts "Нет станции такой или маршрута тоже... нет"
+          puts "Нет станции такой или маршрут тоже... еcть"
         end        
         
       when 2
         puts "Имя. Введи его имя!"
         route_name = gets.chomp
-        if !Route.route_include?(route_name)
+        if !@@all_routes.keys.include?(route_name)
           puts "Ты чего удалять-то пытаешься... нету его и не было никогда"
         else
           puts "Отправляйся в nil, маршрут #{route_name}"
-          Route.remove_from_routes(route_name)
+          route_name.remove_from_routes
         end
       when 3
-        
         puts "Маршруты-отступники"
-        Route.show_all
+        puts @@all_routes
       when 4
         puts "Месть павших маршрутов"
-        Route.show_all
+        @@all_routes
         puts "Назови маршрут"
         route_name = gets.chomp
         puts "Давай сюда имя станции"
         station_name = gets.chomp
-        if Route.route_include?(route_name)
-          Route.add_station(route_name, station_name)
-        else
-          puts "Нееееттт!!! Нет его!"
-        end
+        #if @@all_routes.include?(route_name)
+          route_name.add_station(station_name)
+        #else
+        #  puts "Нееееттт!!! Нет его!"
+        #end
       when 5
         puts "А какой-такой маршрут"
         route_name = gets.chomp
@@ -171,7 +186,7 @@ class Menu
   end
 
 
-  def self.trains_menu
+  def trains_menu
 
     key = ''
     while key != 'exit' do
@@ -282,4 +297,6 @@ class Menu
 
 end
 
-Menu.main_menu
+railway = Menu.new
+
+railway.main_menu

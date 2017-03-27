@@ -18,19 +18,21 @@ class Route
   end
 
 #+
-  def self.remove_from_routes(route_name)
-    @routes.delete(route_name) if @routes.include?(route_name)
+#++
+  def remove_from_routes
+    @@all_routes.delete(self)
   end
 
   def self.route_include?(route_name)
     @routes.keys.include?(route_name)
   end
   #+
-  def self.add_station(route, station)
-    if @routes[route].stations.include?(station)
-      puts "Есть уже такая станция"
+  #++
+  def add_station(station)
+    if @@all_routes[self].include?(station) || !@@all_routes.keys.include?(self)
+      puts "Есть уже такая станция или маршрута нет"
     else
-      @routes[route].stations.insert(-2, station)
+      @@all_routes[self].insert(-2, station)
     end
   end
   #+

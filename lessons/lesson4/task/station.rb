@@ -7,20 +7,20 @@ class Station
     @name = name
     @trains   = []
   end
-
-  def self.station_add(station)
+#+
+  def station_add(station)
     @stations.store(station.name, station)
   end
-
-  def self.station_remove(station)
+#+
+  def station_remove(station)
     @stations.delete(station) if @stations.include?(station)
   end
-
-  def self.stations_show_all
+#+
+  def stations_show_all
     @stations.each { |station| puts "#{station.inspect}" }
   end
 
-  def self.station_include?(station)
+  def station_include?(station)
     @stations.include?(station)
   end
 
