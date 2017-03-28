@@ -20,8 +20,9 @@ class Station
     @stations.each { |station| puts "#{station.inspect}" }
   end
 
-  def station_include?(station)
-    @stations.include?(station)
+#++--
+  def station_include?
+    @@all_stations.keys.include?(station)
   end
 
   def train_add(train)

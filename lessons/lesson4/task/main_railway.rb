@@ -23,8 +23,8 @@
 #+      - Назначать маршрут поезду
 #+      - Добавлять вагоны к поезду
 #+      - Отцеплять вагоны от поезда
-#      - Перемещать поезд по маршруту вперед и назад
-#      - +Просматривать список станций и -список поездов на станции
+#+      - Перемещать поезд по маршруту вперед и назад
+#      - +Просматривать список станций и +список поездов на станции
 
 # В качестве ответа приложить ссылку на репозиторий с решением
 
@@ -40,9 +40,10 @@ require_relative 'cargo_carriage'
 
 class Menu
 
-@@all_stations = {}
-@@all_routes = {}
-@@all_trains = {}
+@@all_stations  = {}
+@@all_routes    = {}
+@@all_trains    = {}
+@@all_carriages = {}
 
   def main_menu
     key = ''
@@ -94,11 +95,9 @@ class Menu
         puts "Введи имя этой прекрасной станции"
         station_name = gets.chomp
         if @@all_stations.keys.include?(station_name)
-          puts "daaaa"
-          puts @@all_stations[station_name]
           @@all_stations.delete(station_name)
         else
-          puts "neeet"
+          puts "Нет такой станции. Вообще нет)"
         end
       when 3
         puts "Узри же, смертный, ярость станций"
@@ -135,11 +134,6 @@ class Menu
         station_last = gets.chomp
 
         if @@all_stations.keys.include?(station_first) && @@all_stations.keys.include?(station_last) && !@@all_routes.include?(route_name)
-          puts "123"
-          puts @@all_stations.keys.include?(station_first)
-          puts "321"
-          puts @@all_stations.keys.include?(station_last)
-
           @@all_routes[route_name] = Route.new(station_first,station_last)
         else
           puts "Нет станции такой или маршрут тоже... еcть"
@@ -152,30 +146,30 @@ class Menu
           puts "Ты чего удалять-то пытаешься... нету его и не было никогда"
         else
           puts "Отправляйся в nil, маршрут #{route_name}"
-          route_name.remove_from_routes
+          @@all_routes.delete(route_name)
         end
       when 3
         puts "Маршруты-отступники"
         puts @@all_routes
       when 4
-        puts "Месть павших маршрутов"
-        @@all_routes
+        puts "Месть павших маршрутов. Добавление станции"
+        puts @@all_routes
         puts "Назови маршрут"
         route_name = gets.chomp
         puts "Давай сюда имя станции"
         station_name = gets.chomp
-        #if @@all_routes.include?(route_name)
-          route_name.add_station(station_name)
-        #else
-        #  puts "Нееееттт!!! Нет его!"
-        #end
+        if @@all_routes.include?(route_name) && !@@all_routes[route_name].stations.include?(station_name)
+          @@all_routes[route_name].stations.insert(-2, station_name)
+        else
+          puts "Нееееттт!!! Нет маршрута! Или есть уже такая станция"
+        end
       when 5
-        puts "А какой-такой маршрут"
+        puts "А какой-такой маршрут для удаления станции"
         route_name = gets.chomp
         puts "Скажи имя грешника"
         station_name = gets.chomp
-        if Route.route_include?(route_name)
-          Route.remove_station(route_name, station_name)
+        if @@all_routes.include?(route_name) && @@all_routes[route_name].stations.include?(station_name)
+          @@all_routes[route_name].stations.delete(station_name)
         else
           puts "Не знаю таких"
         end
@@ -201,6 +195,7 @@ class Menu
       puts "Отправить поезд на станцию в даль. Жми 7"
       puts "Перевести поезд на следующую станцию. Жми 8"
       puts "Перевести поезд на предыдущую станцию. Жми 9"
+      puts "Поезда на станции. Жми 10"
       puts "Для выхода введи exit"
       key = gets.chomp
 
@@ -214,14 +209,14 @@ class Menu
         
         case train_type.to_i
         when 1
-          if !Train.train_include?(train_name) #|| (Train.train_include?(train_name) && ("CargoTrain" != Train.get_type(train_name).to_s))
-            Train.add_to_trains(train_name, CargoTrain.new(train_name))
+          if !@@all_trains.keys.include?(train_name)
+            @@all_trains[train_name] = CargoTrain.new(train_name)
           else
             puts "Их есть у меня"
           end
         when 2
-          if !Train.train_include?(train_name)
-            Train.add_to_trains(train_name, PassengerTrain.new(train_name))
+          if !@@all_trains.keys.include?(train_name)
+            @@all_trains[train_name] = PassengerTrain.new(train_name)
           else
             puts "Их есть у меня"
           end
@@ -230,65 +225,78 @@ class Menu
         end
       when 2
         puts "Поезда все."
-        Train.trains_show_all
+        puts @@all_trains
         puts "Имя. Введи имя для казни!"
         train_name = gets.chomp
-        if Train.train_include?(train_name) #|| (Train.train_include?(train_name) && ("CargoTrain" != Train.get_type(train_name).to_s))
-          Train.remove_from_trains(train_name)
+        if @@all_trains.keys.include?(train_name)
+          @@all_trains.delete(train_name)
         else
           puts "Таких не держим"
         end
       when 3
         puts "Поезда. Месть павших"
-        Train.trains_show_all
+        puts @@all_trains
       when 4
-        Train.trains_show_all
+        puts @@all_trains
         puts "Выбери поезд"
         train_name  = gets.chomp
-        Route.show_all
+        puts @@all_routes
         puts "Куда же его послать?"
         route_name  = gets.chomp
-        if Train.train_include?(train_name) && Route.route_include?(route_name)
-          Train.add_route(train_name, route_name)
+        if @@all_trains.keys.include?(train_name) && @@all_routes.keys.include?(route_name)
+          @@all_trains[train_name].add_route(@@all_routes[route_name])
+          puts @@all_trains
         else
           puts "Поезд из другой реальности и маршрут никак не разобрать"
         end
       when 5
-        Train.trains_show_all
+        puts @@all_trains
         puts "Выбери уже поезд"
         train_name  = gets.chomp
         puts "Ну и вагон назови"
         carriage_name = gets.chomp
-        Train.carriage_add(train_name, carriage_name)
-        puts Carriage.show_carriages.inspect
+        if @@all_trains.keys.include?(train_name) 
+          @@all_carriages[carriage_name] = Object.const_get(@@all_trains[train_name].type.to_s.gsub('Train','')+"Carriage").new(carriage_name)
+          @@all_trains[train_name].carriages << carriage_name
+        else
+          puts "Это не тот поезд"
+        end
       when 6
-        Train.trains_show_all
+        puts @@all_trains
         puts "Выбери уже поезд"
         train_name  = gets.chomp
         puts "Вагон на удаление"
         carriage_name = gets.chomp
-        Train.carriage_remove(train_name, carriage_name)
+        if @@all_trains.keys.include?(train_name) && @@all_trains[train_name].carriages.include?(carriage_name)
+          @@all_trains[train_name].carriages.delete(carriage_name)
+        else
+          puts "эбсэнт или поезд или вагон"
+        end
       when 7
         puts "А пошлю ка я поезд"
         train_name  = gets.chomp
         puts "На станцию"
         station_name  = gets.chomp
-
-        Train.set_current_station(train_name, station_name)
+        if @@all_trains.keys.include?(train_name) && @@all_stations.keys.include?(station_name)
+          @@all_trains[train_name].set_current_station(station_name)
+        else
+          puts "Нет такого поезда или станции"
+        end
       when 8
         puts "Выбери поезд"
         train_name  = gets.chomp
-        puts "Имя станции"
-        station_name  = gets.chomp
-
-        Train.prev_station(train_name, station_name)
+        @@all_trains[train_name].next_station
       when 9
         puts "Выбери поезд"
         train_name  = gets.chomp
-        puts "Имя станции"
-        station_name  = gets.chomp
-
-        Train.next_station(train_name, station_name)
+        @@all_trains[train_name].prev_station
+      when 10
+        puts "Поезда #{@@all_trains}"
+        puts "Хочу найти поезда на станции"
+        station_name = gets.chomp
+        @@all_trains.each { |key, value| puts "#{key} : #{value}" if value.current_station_id == station_name}
+#Так и не понял, почему это не сработало!!!
+#        @@all_trains.select { |key, value| value.current_station_id == station_name}
       else 
         puts "Поезда так не умеют" 
       end
