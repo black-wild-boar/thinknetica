@@ -1,6 +1,5 @@
 class Train
-  attr_accessor :number, :route, :carriages, :current_station_id
-  attr_reader :type, :speed
+  attr_accessor :number, :route, :carriages, :current_station_id, :type, :speed
 
   def initialize(number)
     @number         = number
@@ -79,12 +78,4 @@ protected
       puts "Поезд остановлен" if self.speed == 0  
     end
   end
-
-private
-#поезду не рекомендуется самостоятельно менять тип, скорость и текущую станцию
-  attr_writer :type, :speed
-  attr_accessor :trains
 end
-
-
-
