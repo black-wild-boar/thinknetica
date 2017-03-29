@@ -40,10 +40,18 @@ require_relative 'cargo_carriage'
 
 class Menu
 
-@@all_stations  = {}
-@@all_routes    = {}
-@@all_trains    = {}
-@@all_carriages = {}
+attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
+#@all_stations  = {}
+#@all_routes    = {}
+#@all_trains    = {}
+#@all_carriages = {}
+
+  def initialize
+    @all_stations  = {}
+    @all_routes    = {}
+    @all_trains    = {}
+    @all_carriages = {}
+  end
 
   def main_menu
     key = ''
@@ -89,19 +97,19 @@ class Menu
       case key.to_i 
       when 1
         puts "Введи имя этой прекрасной станции"
-        station_name = gets.chomp
-        @@all_stations[station_name] = Station.new(station_name)
+        station = Station.new(gets.chomp)
+        @all_stations[station.name] = station
       when 2
         puts "Введи имя этой прекрасной станции"
         station_name = gets.chomp
-        if @@all_stations.keys.include?(station_name)
-          @@all_stations.delete(station_name)
+        if @all_stations.keys.include?(station_name)
+          @all_stations.delete(station_name)
         else
           puts "Нет такой станции. Вообще нет)"
         end
       when 3
         puts "Узри же, смертный, ярость станций"
-        puts @@all_stations
+        puts @all_stations
       else 
         puts "Станции такого не умеют"  
       end
@@ -127,14 +135,14 @@ class Menu
       when 1
         puts "Как назвать хочешь ты его?"
         route_name = gets.chomp
-        puts "Станций перечень #{@@all_stations}"
+        puts "Станций перечень #{@all_stations}"
         puts "Введи имя начала"
         station_first = gets.chomp
         puts "Введи имя конца"
         station_last = gets.chomp
 
-        if @@all_stations.keys.include?(station_first) && @@all_stations.keys.include?(station_last) && !@@all_routes.include?(route_name)
-          @@all_routes[route_name] = Route.new(station_first,station_last)
+        if @all_stations.keys.include?(station_first) && @all_stations.keys.include?(station_last) && !@all_routes.include?(route_name)
+          @all_routes[route_name] = Route.new(station_first,station_last)
         else
           puts "Нет станции такой или маршрут тоже... еcть"
         end        
@@ -142,24 +150,24 @@ class Menu
       when 2
         puts "Имя. Введи его имя!"
         route_name = gets.chomp
-        if !@@all_routes.keys.include?(route_name)
+        if !@all_routes.keys.include?(route_name)
           puts "Ты чего удалять-то пытаешься... нету его и не было никогда"
         else
           puts "Отправляйся в nil, маршрут #{route_name}"
-          @@all_routes.delete(route_name)
+          @all_routes.delete(route_name)
         end
       when 3
         puts "Маршруты-отступники"
-        puts @@all_routes
+        puts @all_routes
       when 4
         puts "Месть павших маршрутов. Добавление станции"
-        puts @@all_routes
+        puts @all_routes
         puts "Назови маршрут"
         route_name = gets.chomp
         puts "Давай сюда имя станции"
         station_name = gets.chomp
-        if @@all_routes.include?(route_name) && !@@all_routes[route_name].stations.include?(station_name)
-          @@all_routes[route_name].stations.insert(-2, station_name)
+        if @all_routes.keys.include?(route_name) && @all_stations.keys.include?(station_name)
+          @all_routes[route_name].add_station(station_name)
         else
           puts "Нееееттт!!! Нет маршрута! Или есть уже такая станция"
         end
@@ -168,8 +176,8 @@ class Menu
         route_name = gets.chomp
         puts "Скажи имя грешника"
         station_name = gets.chomp
-        if @@all_routes.include?(route_name) && @@all_routes[route_name].stations.include?(station_name)
-          @@all_routes[route_name].stations.delete(station_name)
+        if @all_routes.include?(route_name) && @all_routes[route_name].stations.include?(station_name)
+          @all_routes[route_name].del_station(station_name)
         else
           puts "Не знаю таких"
         end
@@ -178,7 +186,6 @@ class Menu
       end
     end
   end
-
 
   def trains_menu
 
@@ -209,14 +216,14 @@ class Menu
         
         case train_type.to_i
         when 1
-          if !@@all_trains.keys.include?(train_name)
-            @@all_trains[train_name] = CargoTrain.new(train_name)
+          if !@all_trains.keys.include?(train_name)
+            @all_trains[train_name] = CargoTrain.new(train_name)
           else
             puts "Их есть у меня"
           end
         when 2
-          if !@@all_trains.keys.include?(train_name)
-            @@all_trains[train_name] = PassengerTrain.new(train_name)
+          if !@all_trains.keys.include?(train_name)
+            @all_trains[train_name] = PassengerTrain.new(train_name)
           else
             puts "Их есть у меня"
           end
@@ -225,50 +232,50 @@ class Menu
         end
       when 2
         puts "Поезда все."
-        puts @@all_trains
+        puts @all_trains
         puts "Имя. Введи имя для казни!"
         train_name = gets.chomp
-        if @@all_trains.keys.include?(train_name)
-          @@all_trains.delete(train_name)
+        if @all_trains.keys.include?(train_name)
+          @all_trains.delete(train_name)
         else
           puts "Таких не держим"
         end
       when 3
         puts "Поезда. Месть павших"
-        puts @@all_trains
+        puts @all_trains
       when 4
-        puts @@all_trains
+        puts @all_trains
         puts "Выбери поезд"
         train_name  = gets.chomp
-        puts @@all_routes
+        puts @all_routes
         puts "Куда же его послать?"
         route_name  = gets.chomp
-        if @@all_trains.keys.include?(train_name) && @@all_routes.keys.include?(route_name)
-          @@all_trains[train_name].add_route(@@all_routes[route_name])
-          puts @@all_trains
+        if @all_trains.keys.include?(train_name) && @all_routes.keys.include?(route_name)
+          @all_trains[train_name].add_route(@all_routes[route_name])
+          puts @all_trains
         else
           puts "Поезд из другой реальности и маршрут никак не разобрать"
         end
       when 5
-        puts @@all_trains
+        puts @all_trains
         puts "Выбери уже поезд"
         train_name  = gets.chomp
         puts "Ну и вагон назови"
         carriage_name = gets.chomp
-        if @@all_trains.keys.include?(train_name) 
-          @@all_carriages[carriage_name] = Object.const_get(@@all_trains[train_name].type.to_s.gsub('Train','')+"Carriage").new(carriage_name)
-          @@all_trains[train_name].carriages << carriage_name
+        if @all_trains.keys.include?(train_name) 
+          @all_carriages[carriage_name] = Object.const_get(@all_trains[train_name].type.to_s.gsub('Train','')+"Carriage").new(carriage_name)
+          @all_trains[train_name].add_carriage(carriage_name)
         else
           puts "Это не тот поезд"
         end
       when 6
-        puts @@all_trains
+        puts @all_trains
         puts "Выбери уже поезд"
         train_name  = gets.chomp
         puts "Вагон на удаление"
         carriage_name = gets.chomp
-        if @@all_trains.keys.include?(train_name) && @@all_trains[train_name].carriages.include?(carriage_name)
-          @@all_trains[train_name].carriages.delete(carriage_name)
+        if @all_trains.keys.include?(train_name) && @all_trains[train_name].carriages.include?(carriage_name)
+          @all_trains[train_name].del_carriage(carriage_name)
         else
           puts "эбсэнт или поезд или вагон"
         end
@@ -277,26 +284,26 @@ class Menu
         train_name  = gets.chomp
         puts "На станцию"
         station_name  = gets.chomp
-        if @@all_trains.keys.include?(train_name) && @@all_stations.keys.include?(station_name)
-          @@all_trains[train_name].set_current_station(station_name)
+        if @all_trains.keys.include?(train_name) && @all_stations.keys.include?(station_name)
+          @all_trains[train_name].set_current_station(station_name)
         else
           puts "Нет такого поезда или станции"
         end
       when 8
         puts "Выбери поезд"
         train_name  = gets.chomp
-        @@all_trains[train_name].next_station
+        @all_trains[train_name].next_station
       when 9
         puts "Выбери поезд"
         train_name  = gets.chomp
-        @@all_trains[train_name].prev_station
+        @all_trains[train_name].prev_station
       when 10
-        puts "Поезда #{@@all_trains}"
+        puts "Поезда #{@all_trains}"
         puts "Хочу найти поезда на станции"
         station_name = gets.chomp
-        @@all_trains.each { |key, value| puts "#{key} : #{value}" if value.current_station_id == station_name}
-#Так и не понял, почему это не сработало!!!
-#        @@all_trains.select { |key, value| value.current_station_id == station_name}
+#        @all_trains.each { |key, value| puts "#{key} : #{value}" if value.current_station_id == station_name}
+#что быстрее: select или each и почему?
+        @all_trains.select { |key, value| puts "#{key} : #{value}" if value.current_station_id == station_name}
       else 
         puts "Поезда так не умеют" 
       end

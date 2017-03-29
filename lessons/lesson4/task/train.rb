@@ -1,9 +1,7 @@
 class Train
-  attr_accessor :trains, :number, :route, :carriages, :current_station_id
+  attr_accessor :number, :route, :carriages, :current_station_id
   attr_reader :type, :speed
 
-  @trains = {}
- 
   def initialize(number)
     @number         = number
     @speed          = 0
@@ -40,20 +38,18 @@ class Train
   def speed_show
     puts "Текущая скорость: #{@speed}"
   end
-
-#+
-  def carriage_add(carriage_name)
+#++
+  def add_carriage(carriage)
     if self.speed == 0 
-      Carriage.carriage_add(Carriage.new(carriage_name))
-      @trains[train_name].carriages << carriage_name
+      self.carriages << carriage
     else
       puts "Бегущий поезд лани подобен"      
     end
   end
-
-  def carriage_remove(train_name, carriage)
-    if @trains[train_name].speed == 0 
-      @trains[train_name].carriages.delete(carriage)
+#++
+  def del_carriage(carriage)
+    if self.speed == 0 
+      self.carriages.delete(carriage)
     else
       puts "Индиана Джонс пытается отцепить вагоны на бегу"      
     end

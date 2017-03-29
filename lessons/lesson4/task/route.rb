@@ -1,23 +1,23 @@
 class Route
-  attr_reader :routes, :stations
-
-  @routes = {}
+  attr_reader :stations
 
   def initialize(station_first, station_last)
     @stations= [station_first, station_last]
   end
 
-#++--
-  def remove_from_routes
-    puts @@all_routes
-  end
-
-  #++
   def add_station(station)
-    if @@all_routes[self].include?(station) || !@@all_routes.keys.include?(self)
+    if self.stations.include?(station)
       puts "Есть уже такая станция или маршрута нет"
     else
-      @@all_routes[self].insert(-2, station)
+      self.stations.insert(-2, station)
+    end
+  end
+
+  def del_station(station)
+    if !self.stations.include?(station)
+      puts "Нет станции на маршруте"
+    else
+      self.stations.delete(station)
     end
   end
 end
