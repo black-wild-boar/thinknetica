@@ -38,7 +38,7 @@ class Train
   end
 #++
   def add_carriage(carriage)
-    if self.speed == 0 
+    if self.speed == 0
       self.carriages << carriage
     else
       puts "Бегущий поезд лани подобен"      
@@ -60,6 +60,11 @@ class Train
   def carriage_include?(carriage)
     self.carriages.include?(carriage)
   end
+
+  #def check_type(train)
+  #  self.
+  #end
+
 #то, что должны наследовать потомки
 protected
 

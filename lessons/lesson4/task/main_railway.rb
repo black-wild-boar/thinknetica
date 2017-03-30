@@ -259,14 +259,12 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
         puts "Ну и вагон назови"
         carriage_name = gets.chomp
 #учитываю, что есть общий перечень вагонов
-        if @all_trains.keys.include?(train_name) && @all_trains[train_name].is_a?(PassengerTrain)
-          #@all_trains[train_name].add_carriage(PassengerCarriage.new(carriage_name))
-          #@all_trains[train_name].add_carriage(@all_carriages.select { |key, value| value.number == carriage_name})
+#выражение справа от & выполнится, только если слева != nil 
+        if @all_trains[train_name] && @all_trains[train_name].is_a?(PassengerTrain)
           @all_carriages[carriage_name] = PassengerCarriage.new(carriage_name)
           @all_trains[train_name].add_carriage(@all_carriages[carriage_name])
-        elsif @all_trains.keys.include?(train_name) && @all_trains[train_name].is_a?(CargoTrain)
-          #@all_trains[train_name].add_carriage(CargoCarriage.new(carriage_name))
-          #@all_trains[train_name].add_carriage(@all_carriages.select { |key, value| value.number == carriage_name})
+        #elsif @all_trains.keys.include?(train_name) && @all_trains[train_name].is_a?(CargoTrain)
+        elsif @all_trains[train_name] && @all_trains[train_name].is_a?(CargoTrain)
           @all_carriages[carriage_name] = CargoCarriage.new(carriage_name)
           @all_trains[train_name].add_carriage(@all_carriages[carriage_name])
         else
@@ -278,7 +276,7 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
         train_name  = gets.chomp
         puts "Вагон на удаление"
         carriage_name = gets.chomp
-        if @all_trains.keys.include?(train_name) && @all_trains[train_name].carriage_include?(@all_carriages[carriage_name])#&& @all_trains[train_name].carriages.include?(carriage_name)
+        if @all_trains.keys.include?(train_name) && @all_trains[train_name].carriage_include?(@all_carriages[carriage_name])
           @all_trains[train_name].del_carriage(@all_carriages[carriage_name])
         else
           puts "эбсэнт или поезд или вагон"
