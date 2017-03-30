@@ -1,10 +1,9 @@
 class Train
-  attr_accessor :number, :route, :carriages, :current_station_id, :type, :speed
+  attr_accessor :number, :route, :carriages, :current_station_id, :speed
 
   def initialize(number)
     @number         = number
     @speed          = 0
-    @type           = self.class
     @carriages      = []
   end
 
@@ -53,12 +52,14 @@ class Train
       puts "Индиана Джонс пытается отцепить вагоны на бегу"      
     end
   end
-
 #++
   def add_route(route_name)
       self.route = route_name
   end
-
+#++
+  def carriage_include?(carriage)
+    self.carriages.include?(carriage)
+  end
 #то, что должны наследовать потомки
 protected
 

@@ -41,10 +41,6 @@ require_relative 'cargo_carriage'
 class Menu
 
 attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
-#@all_stations  = {}
-#@all_routes    = {}
-#@all_trains    = {}
-#@all_carriages = {}
 
   def initialize
     @all_stations  = {}
@@ -262,9 +258,17 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
         train_name  = gets.chomp
         puts "Ну и вагон назови"
         carriage_name = gets.chomp
-        if @all_trains.keys.include?(train_name) 
-          @all_carriages[carriage_name] = Object.const_get(@all_trains[train_name].type.to_s.gsub('Train','')+"Carriage").new(carriage_name)
-          @all_trains[train_name].add_carriage(carriage_name)
+#учитываю, что есть общий перечень вагонов
+        if @all_trains.keys.include?(train_name) && @all_trains[train_name].is_a?(PassengerTrain)
+          #@all_trains[train_name].add_carriage(PassengerCarriage.new(carriage_name))
+          #@all_trains[train_name].add_carriage(@all_carriages.select { |key, value| value.number == carriage_name})
+          @all_carriages[carriage_name] = PassengerCarriage.new(carriage_name)
+          @all_trains[train_name].add_carriage(@all_carriages[carriage_name])
+        elsif @all_trains.keys.include?(train_name) && @all_trains[train_name].is_a?(CargoTrain)
+          #@all_trains[train_name].add_carriage(CargoCarriage.new(carriage_name))
+          #@all_trains[train_name].add_carriage(@all_carriages.select { |key, value| value.number == carriage_name})
+          @all_carriages[carriage_name] = CargoCarriage.new(carriage_name)
+          @all_trains[train_name].add_carriage(@all_carriages[carriage_name])
         else
           puts "Это не тот поезд"
         end
@@ -274,8 +278,8 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
         train_name  = gets.chomp
         puts "Вагон на удаление"
         carriage_name = gets.chomp
-        if @all_trains.keys.include?(train_name) && @all_trains[train_name].carriages.include?(carriage_name)
-          @all_trains[train_name].del_carriage(carriage_name)
+        if @all_trains.keys.include?(train_name) && @all_trains[train_name].carriage_include?(@all_carriages[carriage_name])#&& @all_trains[train_name].carriages.include?(carriage_name)
+          @all_trains[train_name].del_carriage(@all_carriages[carriage_name])
         else
           puts "эбсэнт или поезд или вагон"
         end
@@ -301,8 +305,6 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
         puts "Поезда #{@all_trains}"
         puts "Хочу найти поезда на станции"
         station_name = gets.chomp
-#        @all_trains.each { |key, value| puts "#{key} : #{value}" if value.current_station_id == station_name}
-#что быстрее: select или each и почему?
         @all_trains.select { |key, value| puts "#{key} : #{value}" if value.current_station_id == station_name}
       else 
         puts "Поезда так не умеют" 
