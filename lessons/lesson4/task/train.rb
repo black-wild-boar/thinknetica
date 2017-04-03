@@ -4,7 +4,7 @@ class Train
   def initialize(number)
     @number         = number
     @speed          = 0
-    @carriages      = []
+    @carriages      = {}#[]
   end
 
   #++
@@ -37,17 +37,10 @@ class Train
     puts "Текущая скорость: #{@speed}"
   end
 #++
-  def add_carriage(carriage)
-    if self.speed == 0
-      self.carriages << carriage
-    else
-      puts "Бегущий поезд лани подобен"      
-    end
-  end
-#++
   def del_carriage(carriage)
     if self.speed == 0 
-      self.carriages.delete(carriage)
+      #self.carriages.delete(carriage)
+      self.carriages.delete(carriage.number)
     else
       puts "Индиана Джонс пытается отцепить вагоны на бегу"      
     end
@@ -58,12 +51,18 @@ class Train
   end
 #++
   def carriage_include?(carriage)
-    self.carriages.include?(carriage)
+    self.carriages.keys.include?(carriage.number)
   end
 
-  #def check_type(train)
-  #  self.
-  #end
+  #++
+  def add_carriage(carriage)
+    if self.speed == 0 && !carriage_include?(carriage)
+      #self.carriages << carriage
+      self.carriages[carriage.number] = carriage
+    else
+      puts "Бегущий поезд лани подобен"      
+    end
+  end
 
 #то, что должны наследовать потомки
 protected
