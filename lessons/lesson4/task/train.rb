@@ -39,7 +39,6 @@ class Train
 #++
   def del_carriage(carriage)
     if self.speed == 0 
-      #self.carriages.delete(carriage)
       self.carriages.delete(carriage.number)
     else
       puts "Индиана Джонс пытается отцепить вагоны на бегу"      
@@ -57,7 +56,6 @@ class Train
   #++
   def add_carriage(carriage)
     if self.speed == 0 && !carriage_include?(carriage)
-      #self.carriages << carriage
       self.carriages[carriage.number] = carriage
     else
       puts "Бегущий поезд лани подобен"      
