@@ -1,4 +1,47 @@
-class Car
+module FuelTank
+  def fill_tank(level)
+    self.fuel_tank = level
+  end
+
+  def fuel_level
+    self.fuel_tank
+  end
+
+  protected
+  attr_accessor :fuel_tank
+end
+
+module Debugger # == Debugger = Module.new do ...end
+  # в параметр base будет передаваться сам метод, в который подключаю модуль
+  def self.included(base)
+    base.extend ClassMethods
+    #вызов метода == отправка сообщения (send для работы с приватными методами)
+    base.send :include, InstanceMethods
+  end
+  module ClassMethods
+    def debug(log)
+      puts "Debug:  #{log} !!!"
+    end
+  end
+  module InstanceMethods
+    def debug(log)
+      self.class.debug(log)
+    end
+    def print_class
+      puts self.class
+    end
+  end
+end
+
+class Car # == Car = Class.new do ... end
+#включает методы модуля как методы инстанса (экземпляра класса)
+  include FuelTank
+#включает методы модуля как методы класса
+  #extend Debugger::ClassMethods
+  #include Debugger::InstanceMethods
+# т.к. self.included(base)
+  include Debugger
+
   attr_reader :current_rpm
 
 #переменные класса
@@ -14,15 +57,12 @@ class Car
     puts "метод инстанса"
   end
 
-#блок методов класса
+#блок объявления методов класса
   class << self
     def instances
       @@instances
     end
 
-    def debug(log)
-      puts "Debug:  #{log} !!!"
-    end
   end
 
   debug 'Start interface'
@@ -31,6 +71,7 @@ class Car
   def initialize
     @current_rpm = 0
     @@instances += 1
+    debug 'initialize'
   end
 
   def start_engine
@@ -58,4 +99,11 @@ class Car
 
   def stop
   end
+end
+
+class MotoBike
+  include FuelTank
+  include Debugger
+
+  debug 'Motobike class'
 end
