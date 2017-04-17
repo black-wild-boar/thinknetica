@@ -1,4 +1,7 @@
+require './modules/instance_counter.rb'
+
 class Station
+  include InstanceCounter
   attr_reader :name
 
   def initialize(name)
@@ -12,4 +15,9 @@ class Station
   def del_train(train)
     self.train.delete(train)
   end
+
+  def self.all
+    puts "Все станции: #{@@all_stations} "
+  end
+
 end

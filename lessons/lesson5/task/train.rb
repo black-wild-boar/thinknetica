@@ -1,7 +1,9 @@
+require './modules/company_name.rb'
+
 class Train
 
-  #include CompanyName
   attr_accessor :number, :route, :carriages, :current_station_id, :speed
+  include CompanyName
 
   def initialize(number)
     @number         = number
@@ -9,6 +11,13 @@ class Train
     @carriages      = {}#[]
   end
 
+  def self.find(number)
+    if @@all_trains.keys.include?(number)
+      puts "Есть такой поезд: #{@@all_trains[number]}"
+    else
+      puts nil
+    end
+  end
   #++
   def set_current_station(station)
     if self.route.stations.include?(station)
