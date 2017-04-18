@@ -4,8 +4,11 @@ class Station
   include InstanceCounter
   attr_reader :name
 
+  @@all_stations = {}
+
   def initialize(name)
-    @name = name
+    @name                = name
+    @@all_stations[name] = self
   end
 
   def add_train(train)
@@ -17,7 +20,6 @@ class Station
   end
 
   def self.all
-    puts "Все станции: #{@@all_stations} "
+    @@all_stations
   end
-
 end

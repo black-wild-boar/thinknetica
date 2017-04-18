@@ -8,18 +8,17 @@ class Train
   include CompanyName
   include InstanceCounter
 
+  @@all_trains = {}
+
   def initialize(number)
-    @number         = number
-    @speed          = 0
-    @carriages      = {}#[]
+    @number              = number
+    @speed               = 0
+    @carriages           = {}
+    @@all_trains[number] = self
   end
 
   def self.find(number)
-    if @@all_trains.keys.include?(number)
-      puts "Есть такой поезд: #{@@all_trains[number]}"
-    else
-      puts nil
-    end
+    @@all_trains[number] if @@all_trains.keys.include?(number)
   end
   #++
   def set_current_station(station)
