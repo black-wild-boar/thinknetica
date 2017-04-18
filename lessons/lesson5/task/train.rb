@@ -18,7 +18,7 @@ class Train
   end
 
   def self.find(number)
-    @@all_trains[number] if @@all_trains.keys.include?(number)
+    @@all_trains[number]
   end
   #++
   def set_current_station(station)
