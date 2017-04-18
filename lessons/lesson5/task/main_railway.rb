@@ -199,7 +199,6 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
       puts "Перевести поезд на следующую станцию. Жми 8"
       puts "Перевести поезд на предыдущую станцию. Жми 9"
       puts "Поезда на станции. Жми 10"
-      puts "Найти поезд. Жми 11"
       puts "Для выхода введи exit"
       key = gets.chomp
 
@@ -305,10 +304,6 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
         puts "Хочу найти поезда на станции"
         station_name = gets.chomp
         @@all_trains.select { |key, value| puts "#{key} : #{value}" if value.current_station_id == station_name}
-      when 11
-        puts "Хочу найти поезд"
-        train_name = gets.chomp
-        Train.find(train_name)
       else 
         puts "Поезда так не умеют" 
       end

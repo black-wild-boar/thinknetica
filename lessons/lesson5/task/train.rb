@@ -1,9 +1,12 @@
 require './modules/company_name.rb'
+require './modules/instance_counter.rb'
+
 
 class Train
 
   attr_accessor :number, :route, :carriages, :current_station_id, :speed
   include CompanyName
+  include InstanceCounter
 
   def initialize(number)
     @number         = number
