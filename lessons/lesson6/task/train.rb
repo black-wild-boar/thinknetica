@@ -15,34 +15,21 @@ class Train
 
   def initialize(number)
     @number              = number
+    validate!
     @speed               = 0
     @carriages           = {}
     @@all_trains[number] = self
-    #valid?(number)
-    validate!(number)
   end
 
-  #def check_valid(number)
-  #  valid?(number)
-  #end
-
-#valid?(train_name)
-        
-        #rescue
-        #puts "Неправильный номер поезда"
-        #retry
-        #end  
-        
   def valid?
     validate!
-    true
+    rescue
+    false
   end
 
-  def validate!(item)
-    raise "Неверный формат номера" if item !~ TRAIN_PATTERN
-    rescue
-    puts "Неправильный номер поезда"
-    retry
+  def validate!
+    raise "Неверный формат номера поезда" if @number !~ TRAIN_PATTERN
+    true
   end
 
   def self.find(number)

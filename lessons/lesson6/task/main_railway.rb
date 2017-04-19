@@ -67,11 +67,10 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
           puts "Введи имя этой прекрасной станции"
           station_name = gets.chomp
           station = Station.new(station_name)
-          valid?(station_name)
-          rescue
-          puts "Неправильное имя станции"
-          retry
-        end
+        rescue => e
+          puts e.inspect
+        retry
+        end  
         @all_stations[station.name] = station
       when 2
         puts "Введи имя этой прекрасной станции"
@@ -182,19 +181,18 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
 
       case key.to_i 
       when 1
-        #begin
+        begin
         puts "И как мы назовём этот поезд?"
         train_name = gets.chomp
         puts "Добавим немного красок"
         puts "Грузовой (нажми 1), Пассажирский (нажми 2)"
         train_type = gets.chomp
         
-        #valid?(train_name)
-        #validate!
-        #rescue
-        #puts "Неправильный номер поезда"
-        #retry
-        #end  
+        Train.new(train_name)
+        rescue => e
+          puts e.inspect
+        retry
+        end  
         case train_type.to_i
         when 1
           if !@all_trains.keys.include?(train_name)
@@ -239,16 +237,16 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
         end
       when 5
         begin
-        puts @all_trains
-        puts "Выбери уже поезд"
-        train_name  = gets.chomp
-        puts "Ну и вагон назови"
-        carriage_name = gets.chomp
-        valid?(carriage_name)
-        rescue
-          puts "Неправильное название вагона"
+          puts @all_trains
+          puts "Выбери уже поезд"
+          train_name  = gets.chomp
+          puts "Ну и вагон назови"
+          carriage_name = gets.chomp
+          Carriage.new(carriage_name)
+        rescue => e
+          puts e.inspect
         retry
-        end
+        end  
 #учитываю, что есть общий перечень вагонов
 #выражение справа от & выполнится, только если слева != nil 
         if @all_trains[train_name] && @all_trains[train_name].is_a?(PassengerTrain)
