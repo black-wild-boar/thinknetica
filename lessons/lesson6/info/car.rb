@@ -43,6 +43,7 @@ class Car # == Car = Class.new do ... end
   include Debugger
 
   attr_reader :current_rpm
+  attr_accessor :number
 
 #переменные класса
 @@instances = 0
@@ -67,11 +68,18 @@ class Car # == Car = Class.new do ... end
 
   debug 'Start interface'
 
+  def validate!
+    raise "Номер не может быть пустым" if number.nil?
+    raise "Номер должен быть 6 символов" if number.length < 6
+    true
+  end
 
-  def initialize
+  def initialize(number)
     @current_rpm = 0
     @@instances += 1
     debug 'initialize'
+    @number = number
+    validate!
   end
 
   def start_engine

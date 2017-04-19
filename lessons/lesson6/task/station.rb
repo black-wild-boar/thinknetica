@@ -1,7 +1,10 @@
 require './modules/instance_counter.rb'
+require './modules/validate.rb'
 
 class Station
   include InstanceCounter
+  include Validate
+
   attr_reader :name
 
   @@all_stations = {}
@@ -9,6 +12,7 @@ class Station
   def initialize(name)
     @name                = name
     @@all_stations[name] = self
+    valid?(name)
   end
 
   def add_train(train)

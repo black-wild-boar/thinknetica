@@ -1,34 +1,3 @@
-# Задание:
-
-#+ Разбить программу на отдельные классы (каждый класс в отдельном файле)
-# Разделить поезда на два типа PassengerTrain и CargoTrain, сделать родителя
-# для классов, который будет содержать общие методы и свойства Определить,
-# какие методы могут быть помещены в private/protected и вынести их в такую
-# секцию. В комментарии к методу обосновать, почему он был вынесен в
-# private/protected 
-#+Вагоны теперь делятся на грузовые и пассажирские
-#+ (отдельные классы). К пассажирскому поезду можно прицепить только
-#+ пассажирские, к грузовому - грузовые.  При добавлении вагона к поезду,
-#+ объект вагона должен передаваться как аругмент метода и сохраняться во
-#+ внутреннем массиве поезда, в отличие от предыдущего задания, где мы считали
-#+ только кол-во вагонов. Параметр конструктора "кол-во вагонов" при этом можно
-#+ удалить.
-
-# Добавить текстовый интерфейс:
-
-# Создать программу в файле main.rb, которая будет позволять пользователю через текстовый интерфейс делать следующее:
-#+      - Создавать станции
-#+      - Создавать поезда
-#+      - Создавать маршруты и управлять станциями в нем (добавлять, удалять)
-#+      - Назначать маршрут поезду
-#+      - Добавлять вагоны к поезду
-#+      - Отцеплять вагоны от поезда
-#+      - Перемещать поезд по маршруту вперед и назад
-#      - +Просматривать список станций и +список поездов на станции
-
-# В качестве ответа приложить ссылку на репозиторий с решением
-
-#l4-1
 require_relative 'station'
 require_relative 'route'
 require_relative 'train'
@@ -37,11 +6,13 @@ require_relative 'cargo_train'
 require_relative 'carriage'
 require_relative 'passenger_carriage'
 require_relative 'cargo_carriage'
+require './modules/validate.rb'
 
 class Menu
 
 attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
-
+  include Validate
+  
   def initialize
     @all_stations  = {}
     @all_routes    = {}
@@ -92,8 +63,15 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
 
       case key.to_i 
       when 1
-        puts "Введи имя этой прекрасной станции"
-        station = Station.new(gets.chomp)
+        begin
+          puts "Введи имя этой прекрасной станции"
+          station_name = gets.chomp
+          station = Station.new(station_name)
+          valid?(station_name)
+          rescue
+          puts "Неправильное имя станции"
+          retry
+        end
         @all_stations[station.name] = station
       when 2
         puts "Введи имя этой прекрасной станции"
@@ -204,12 +182,19 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
 
       case key.to_i 
       when 1
+        begin
         puts "И как мы назовём этот поезд?"
         train_name = gets.chomp
         puts "Добавим немного красок"
         puts "Грузовой (нажми 1), Пассажирский (нажми 2)"
         train_type = gets.chomp
         
+        valid?(train_name)
+        #Train.check_valid(train_name)
+        rescue
+        puts "Неправильный номер поезда"
+        retry
+        end  
         case train_type.to_i
         when 1
           if !@all_trains.keys.include?(train_name)
@@ -253,11 +238,17 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
           puts "Поезд из другой реальности и маршрут никак не разобрать"
         end
       when 5
+        begin
         puts @all_trains
         puts "Выбери уже поезд"
         train_name  = gets.chomp
         puts "Ну и вагон назови"
         carriage_name = gets.chomp
+        valid?(carriage_name)
+        rescue
+          puts "Неправильное название вагона"
+        retry
+        end
 #учитываю, что есть общий перечень вагонов
 #выражение справа от & выполнится, только если слева != nil 
         if @all_trains[train_name] && @all_trains[train_name].is_a?(PassengerTrain)

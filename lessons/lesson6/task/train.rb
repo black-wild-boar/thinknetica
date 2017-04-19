@@ -1,12 +1,13 @@
 require './modules/company_name.rb'
 require './modules/instance_counter.rb'
-
+require './modules/validate.rb'
 
 class Train
 
   attr_accessor :number, :route, :carriages, :current_station_id, :speed
   include CompanyName
   include InstanceCounter
+  include Validate
 
   @@all_trains = {}
 
@@ -15,6 +16,11 @@ class Train
     @speed               = 0
     @carriages           = {}
     @@all_trains[number] = self
+    valid?(number)
+  end
+
+  def check_valid(number)
+    valid?(number)
   end
 
   def self.find(number)
