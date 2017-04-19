@@ -1,13 +1,15 @@
 require './modules/company_name.rb'
 require './modules/instance_counter.rb'
-require './modules/validate.rb'
+#require './modules/validate.rb'
 
 class Train
 
   attr_accessor :number, :route, :carriages, :current_station_id, :speed
   include CompanyName
   include InstanceCounter
-  include Validate
+  #include Validate
+
+  TRAIN_PATTERN = /^(\w{3}|[a-z]{3})+(-?)+(\d{2}|[a-z]{2})$/
 
   @@all_trains = {}
 
@@ -16,11 +18,31 @@ class Train
     @speed               = 0
     @carriages           = {}
     @@all_trains[number] = self
-    valid?(number)
+    #valid?(number)
+    validate!(number)
   end
 
-  def check_valid(number)
-    valid?(number)
+  #def check_valid(number)
+  #  valid?(number)
+  #end
+
+#valid?(train_name)
+        
+        #rescue
+        #puts "Неправильный номер поезда"
+        #retry
+        #end  
+        
+  def valid?
+    validate!
+    true
+  end
+
+  def validate!(item)
+    raise "Неверный формат номера" if item !~ TRAIN_PATTERN
+    rescue
+    puts "Неправильный номер поезда"
+    retry
   end
 
   def self.find(number)

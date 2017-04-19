@@ -6,12 +6,12 @@ require_relative 'cargo_train'
 require_relative 'carriage'
 require_relative 'passenger_carriage'
 require_relative 'cargo_carriage'
-require './modules/validate.rb'
+#require './modules/validate.rb'
 
 class Menu
 
 attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
-  include Validate
+  #include Validate
   
   def initialize
     @all_stations  = {}
@@ -182,19 +182,19 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
 
       case key.to_i 
       when 1
-        begin
+        #begin
         puts "И как мы назовём этот поезд?"
         train_name = gets.chomp
         puts "Добавим немного красок"
         puts "Грузовой (нажми 1), Пассажирский (нажми 2)"
         train_type = gets.chomp
         
-        valid?(train_name)
-        #Train.check_valid(train_name)
-        rescue
-        puts "Неправильный номер поезда"
-        retry
-        end  
+        #valid?(train_name)
+        #validate!
+        #rescue
+        #puts "Неправильный номер поезда"
+        #retry
+        #end  
         case train_type.to_i
         when 1
           if !@all_trains.keys.include?(train_name)
