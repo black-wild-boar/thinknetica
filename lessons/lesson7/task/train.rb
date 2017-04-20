@@ -1,13 +1,11 @@
 require './modules/company_name.rb'
 require './modules/instance_counter.rb'
-#require './modules/validate.rb'
 
 class Train
 
   attr_accessor :number, :route, :carriages, :current_station_id, :speed
   include CompanyName
   include InstanceCounter
-  #include Validate
 
   TRAIN_PATTERN = /^(\w{3}|[a-z]{3})+(-?)+(\d{2}|[a-z]{2})$/
 
@@ -19,6 +17,22 @@ class Train
     @speed               = 0
     @carriages           = {}
     @@all_trains[number] = self
+  end
+
+  def self.show_all_carriages(&block)
+    @@all_trains.values.each do |train|
+      puts train
+      train.carriages.values.each do |carriage|
+        # ??? Непойму, почему не срабатывается это конструкция, хотя сравнение строк - работает
+        #if carriage.class.is_a?(PassengerCarriage)
+          yield(carriage.number, carriage.class, carriage.seats_free?,carriage.seats_engaged)  if carriage.class.to_s == 'PassengerCarriage'
+          yield(carriage.number, carriage.class, carriage.free_volume?, carriage.engaged_volume) if carriage.class.to_s == 'CargoCarriage'
+      end
+    end
+  end
+
+  def self.all
+    @@all_trains
   end
 
   def valid?

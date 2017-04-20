@@ -6,12 +6,10 @@ require_relative 'cargo_train'
 require_relative 'carriage'
 require_relative 'passenger_carriage'
 require_relative 'cargo_carriage'
-#require './modules/validate.rb'
 
 class Menu
 
 attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
-  #include Validate
   
   def initialize
     @all_stations  = {}
@@ -58,6 +56,7 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
       puts "Добавить. Жми 1"
       puts "Удалить. Жми 2"
       puts "Покажи мне их. Жми 3"
+      puts "Узреть все поезда на станциях. Жми 4"
       puts "Для выхода введи exit"
       key = gets.chomp
 
@@ -83,6 +82,8 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
       when 3
         puts "Узри же, смертный, ярость станций"
         puts @all_stations
+      when 4
+        Station.show_all_trains { |number, type, carriages_count| puts "Поезд № #{number}, тип: #{type}, количество вагонов: #{carriages_count}"}
       else 
         puts "Станции такого не умеют"  
       end
@@ -176,6 +177,7 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
       puts "Перевести поезд на следующую станцию. Жми 8"
       puts "Перевести поезд на предыдущую станцию. Жми 9"
       puts "Поезда на станции. Жми 10"
+      puts "Все вагоны поездов. Жми 11"
       puts "Для выхода введи exit"
       key = gets.chomp
 
@@ -250,11 +252,15 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
 #учитываю, что есть общий перечень вагонов
 #выражение справа от & выполнится, только если слева != nil 
         if @all_trains[train_name] && @all_trains[train_name].is_a?(PassengerTrain)
-          @all_carriages[carriage_name] = PassengerCarriage.new(carriage_name)
+          puts "Введи количество мест вагона"
+          seats_count = gets.chomp.to_i
+          @all_carriages[carriage_name] = PassengerCarriage.new(carriage_name, seats_count)
           @all_trains[train_name].add_carriage(@all_carriages[carriage_name])
         #elsif @all_trains.keys.include?(train_name) && @all_trains[train_name].is_a?(CargoTrain)
         elsif @all_trains[train_name] && @all_trains[train_name].is_a?(CargoTrain)
-          @all_carriages[carriage_name] = CargoCarriage.new(carriage_name)
+          puts "Введи объём вагона"
+          carriage_volume = gets.chomp.to_i
+          @all_carriages[carriage_name] = CargoCarriage.new(carriage_name, carriage_volume)
           @all_trains[train_name].add_carriage(@all_carriages[carriage_name])
         else
           puts "Это не тот поезд"
@@ -277,6 +283,7 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
         station_name  = gets.chomp
         if @all_trains.keys.include?(train_name) && @all_stations.keys.include?(station_name)
           @all_trains[train_name].set_current_station(station_name)
+          @all_stations[station_name].add_train(@all_trains[train_name])
         else
           puts "Нет такого поезда или станции"
         end
@@ -293,6 +300,8 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
         puts "Хочу найти поезда на станции"
         station_name = gets.chomp
         @all_trains.select { |key, value| puts "#{key} : #{value}" if value.current_station_id == station_name}
+      when 11
+        Train.show_all_carriages { |number, type, free_space, occupied_space| puts "Вагон № #{number}, тип: #{type}, свободное пространство: #{free_space}, занятое пространство: #{occupied_space}"}
       else 
         puts "Поезда так не умеют" 
       end
