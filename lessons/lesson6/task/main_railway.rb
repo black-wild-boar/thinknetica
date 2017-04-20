@@ -69,7 +69,7 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
           station = Station.new(station_name)
         rescue => e
           puts e.inspect
-        retry
+          retry
         end  
         @all_stations[station.name] = station
       when 2
@@ -191,7 +191,7 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
         Train.new(train_name)
         rescue => e
           puts e.inspect
-        retry
+          retry
         end  
         case train_type.to_i
         when 1
@@ -245,7 +245,7 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
           Carriage.new(carriage_name)
         rescue => e
           puts e.inspect
-        retry
+          retry
         end  
 #учитываю, что есть общий перечень вагонов
 #выражение справа от & выполнится, только если слева != nil 

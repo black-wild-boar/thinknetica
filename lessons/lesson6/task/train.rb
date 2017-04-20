@@ -23,7 +23,7 @@ class Train
 
   def valid?
     validate!
-    rescue
+  rescue
     false
   end
 

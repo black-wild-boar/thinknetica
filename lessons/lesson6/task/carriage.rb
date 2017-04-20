@@ -20,7 +20,7 @@ class Carriage
 
   def valid?
     validate!
-    rescue
+  rescue
     false
   end
 
