@@ -2,17 +2,18 @@ class CargoCarriage < Carriage
   #собственно, методы-геттеры
   attr_reader :full_volume, :engaged_volume
 
-  def initialize(number, full_volume)
+  def initialize(number, full_volume, engaged_volume = 0)
     super(number)
     @full_volume = full_volume
+    @engaged_volume = 0
   end
   
   def occupie_volume(size)
-    if @full_volume > size
-      raise "Нельзя занять больше объем, чем есть"
-    else
-      @engaged_volume = size
-    end
+    @engaged_volume += size if @full_volume > size
+  end
+
+  def release_volume(size)
+    @engaged_volume -= size if @engaged_volume > size
   end
 
   def free_volume?

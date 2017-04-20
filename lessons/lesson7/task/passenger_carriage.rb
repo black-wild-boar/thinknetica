@@ -2,26 +2,18 @@ class PassengerCarriage < Carriage
   #метод-геттер
   attr_reader :seats_count, :seats_engaged
 
-  def initialize(number, seats_count, seats_engaged=0)
+  def initialize(number, seats_count, seats_engaged = 0)
     super(number)
     @seats_count = seats_count
     @seats_engaged = 0
   end
 
   def occupie_seat
-    if (@seats_count - @seats_engaged) > 0
-      @seats_engaged += 1
-    else
-      raise "Все места заняты"
-    end
+    @seats_engaged += 1 if (@seats_count - @seats_engaged) > 0
   end
 
   def release_seat
-    if (@seats_engaged - 1) >= 0
-      @seats_engaged -= 1
-    else
-      raise "Все места свободны"
-    end
+    @seats_engaged -= 1 if (@seats_engaged - 1) >= 0
   end
 
   def seats_free?

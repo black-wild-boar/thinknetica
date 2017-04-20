@@ -178,6 +178,7 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
       puts "Перевести поезд на предыдущую станцию. Жми 9"
       puts "Поезда на станции. Жми 10"
       puts "Все вагоны поездов. Жми 11"
+      puts "Занять/Освободить пространство вагона. Жми 12"
       puts "Для выхода введи exit"
       key = gets.chomp
 
@@ -302,6 +303,45 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
         @all_trains.select { |key, value| puts "#{key} : #{value}" if value.current_station_id == station_name}
       when 11
         Train.show_all_carriages { |number, type, free_space, occupied_space| puts "Вагон № #{number}, тип: #{type}, свободное пространство: #{free_space}, занятое пространство: #{occupied_space}"}
+      when 12
+        begin
+          puts @all_trains
+          puts "Выбери уже поезд"
+          train_name  = gets.chomp
+          puts "Ну и вагон назови"
+          carriage_name = gets.chomp
+          Carriage.new(carriage_name)
+        rescue => e
+          puts e.inspect
+          retry
+        end  
+          puts "Занимать. Жми 1"
+          puts "Освобождать. Жми 2"
+          choice = gets.chomp.to_i
+          case choice
+          when 1
+            if @all_trains[train_name] && @all_trains[train_name].is_a?(PassengerTrain)
+              @all_trains[train_name].carriages[carriage_name].occupie_seat
+            elsif @all_trains[train_name] && @all_trains[train_name].is_a?(CargoTrain)
+              puts "Введи объем"
+              volume = gets.chomp.to_i
+              @all_trains[train_name].carriages[carriage_name].occupie_volume(volume)
+            else
+              puts "Вагон не той системы"
+            end
+          when 2
+            if @all_trains[train_name] && @all_trains[train_name].is_a?(PassengerTrain)
+              @all_trains[train_name].carriages[carriage_name].release_seat
+            elsif @all_trains[train_name] && @all_trains[train_name].is_a?(CargoTrain)
+              puts "Введи объем"
+              volume = gets.chomp.to_i
+              @all_trains[train_name].carriages[carriage_name].release_volume(volume)
+            else
+              puts "Вагон не той системы"
+            end
+          else
+            puts "неверный выбор"
+          end
       else 
         puts "Поезда так не умеют" 
       end
