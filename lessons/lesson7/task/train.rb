@@ -25,8 +25,8 @@ class Train
       train.carriages.values.each do |carriage|
         # ??? Непойму, почему не срабатывается это конструкция, хотя сравнение строк - работает
         #if carriage.class.is_a?(PassengerCarriage)
-          yield(carriage.number, carriage.class, carriage.seats_free?,carriage.seats_engaged)  if carriage.class.to_s == 'PassengerCarriage'
-          yield(carriage.number, carriage.class, carriage.free_volume?, carriage.engaged_volume) if carriage.class.to_s == 'CargoCarriage'
+          yield(carriage.number, carriage.class, carriage.seats_count - carriage.seats_engaged,carriage.seats_engaged)  if carriage.class.to_s == 'PassengerCarriage'
+          yield(carriage.number, carriage.class, carriage.free_volume, carriage.engaged_volume) if carriage.class.to_s == 'CargoCarriage'
       end
     end
   end

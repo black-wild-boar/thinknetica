@@ -1,5 +1,5 @@
 class PassengerCarriage < Carriage
-  #метод-геттер
+
   attr_reader :seats_count, :seats_engaged
 
   def initialize(number, seats_count, seats_engaged = 0)
@@ -16,10 +16,10 @@ class PassengerCarriage < Carriage
     @seats_engaged -= 1 if (@seats_engaged - 1) >= 0
   end
 
-  def seats_free?
-    @seats_engaged ||= 0
-    @seats_count - @seats_engaged
-  end
+  #def seats_free
+  #  @seats_engaged ||= 0
+  #  @seats_count - @seats_engaged
+  #end
 
   private
   attr_writer :seats_count, :seats_engaged

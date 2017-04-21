@@ -1,5 +1,5 @@
 class CargoCarriage < Carriage
-  #собственно, методы-геттеры
+
   attr_reader :full_volume, :engaged_volume
 
   def initialize(number, full_volume, engaged_volume = 0)
@@ -9,14 +9,14 @@ class CargoCarriage < Carriage
   end
   
   def occupie_volume(size)
-    @engaged_volume += size if @full_volume > size
+    @engaged_volume += size if @full_volume > size && (@full_volume - @engaged_volume) > size
   end
 
   def release_volume(size)
     @engaged_volume -= size if @engaged_volume > size
   end
 
-  def free_volume?
+  def free_volume
     @engaged_volume ||= 0
     @full_volume - @engaged_volume 
   end
