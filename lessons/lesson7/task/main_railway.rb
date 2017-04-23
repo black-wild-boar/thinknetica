@@ -85,7 +85,7 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
       when 4
         puts "Введи название станции"
         station_name = gets.chomp
-        @all_stations[station_name].show_all_trains { |train| puts "Поезд № #{train.number}, тип: #{train.class}, количество вагонов: #{train.carriages.length}"}
+        @all_stations[station_name].each_train { |train| puts "Поезд № #{train.number}, тип: #{train.class}, количество вагонов: #{train.carriages.length}"}
       else 
         puts "Станции такого не умеют"  
       end
@@ -307,7 +307,7 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
         puts "Выбери поезд"
         train_name  = gets.chomp
 
-        @all_trains[train_name].show_all_carriages do |carriage| 
+        @all_trains[train_name].each_carriage do |carriage| 
           if carriage.is_a?(CargoCarriage)
             puts "Вагон № #{carriage.number}, тип: #{carriage.class}, свободное пространство: #{carriage.free_volume}, занятое пространство: #{carriage.engaged_volume}"
           elsif carriage.is_a?(PassengerCarriage)

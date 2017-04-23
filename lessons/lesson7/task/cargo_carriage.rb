@@ -9,7 +9,7 @@ class CargoCarriage < Carriage
   end
   
   def occupie_volume(size)
-    @engaged_volume += size if self.free_volume >= size
+    @engaged_volume += size if free_volume >= size
   end
 
   def release_volume(size)

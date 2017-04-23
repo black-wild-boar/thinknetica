@@ -19,7 +19,7 @@ class Train
     @@all_trains[number] = self
   end
 
-  def show_all_carriages(&block)
+  def each_carriage(&block)
     self.carriages.values.each { |carriage| yield(carriage)}
   end
   end
