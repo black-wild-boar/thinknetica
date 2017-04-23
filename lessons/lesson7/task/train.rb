@@ -19,16 +19,9 @@ class Train
     @@all_trains[number] = self
   end
 
-  def self.show_all_carriages(&block)
-    @@all_trains.values.each do |train|
-      puts train
-      train.carriages.values.each do |carriage|
-        # ??? Непойму, почему не срабатывается это конструкция, хотя сравнение строк - работает
-        #if carriage.class.is_a?(PassengerCarriage)
-          yield(carriage.number, carriage.class, carriage.seats_count - carriage.seats_engaged,carriage.seats_engaged)  if carriage.class.to_s == 'PassengerCarriage'
-          yield(carriage.number, carriage.class, carriage.free_volume, carriage.engaged_volume) if carriage.class.to_s == 'CargoCarriage'
-      end
-    end
+  def show_all_carriages(&block)
+    self.carriages.values.each { |carriage| yield(carriage)}
+  end
   end
 
   def self.all

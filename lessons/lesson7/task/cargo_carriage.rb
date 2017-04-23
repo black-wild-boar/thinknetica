@@ -5,19 +5,18 @@ class CargoCarriage < Carriage
   def initialize(number, full_volume, engaged_volume = 0)
     super(number)
     @full_volume = full_volume
-    @engaged_volume = 0
+    @engaged_volume = engaged_volume
   end
   
   def occupie_volume(size)
-    @engaged_volume += size if @full_volume > size && (@full_volume - @engaged_volume) > size
+    @engaged_volume += size if self.free_volume >= size
   end
 
   def release_volume(size)
-    @engaged_volume -= size if @engaged_volume > size
+    @engaged_volume -= size if @engaged_volume >= size
   end
 
   def free_volume
-    @engaged_volume ||= 0
     @full_volume - @engaged_volume 
   end
 

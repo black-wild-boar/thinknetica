@@ -16,13 +16,8 @@ class Station
     @train = {}
   end
 
-  def self.show_all_trains(&block)
-    @@all_stations.values.each do |station|
-      puts "Станция #{station}"
-      station.train.values.each do |train|
-        yield(train.number, train.class, train.carriages.length)
-      end
-    end
+  def show_all_trains(&block)
+    self.train.values.each { |train| yield(train) }
   end
 
   def valid?

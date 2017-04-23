@@ -83,7 +83,9 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
         puts "Узри же, смертный, ярость станций"
         puts @all_stations
       when 4
-        Station.show_all_trains { |number, type, carriages_count| puts "Поезд № #{number}, тип: #{type}, количество вагонов: #{carriages_count}"}
+        puts "Введи название станции"
+        station_name = gets.chomp
+        @all_stations[station_name].show_all_trains { |train| puts "Поезд № #{train.number}, тип: #{train.class}, количество вагонов: #{train.carriages.length}"}
       else 
         puts "Станции такого не умеют"  
       end
@@ -302,7 +304,18 @@ attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
         station_name = gets.chomp
         @all_trains.select { |key, value| puts "#{key} : #{value}" if value.current_station_id == station_name}
       when 11
-        Train.show_all_carriages { |number, type, free_space, occupied_space| puts "Вагон № #{number}, тип: #{type}, свободное пространство: #{free_space}, занятое пространство: #{occupied_space}"}
+        puts "Выбери поезд"
+        train_name  = gets.chomp
+
+        @all_trains[train_name].show_all_carriages do |carriage| 
+          if carriage.is_a?(CargoCarriage)
+            puts "Вагон № #{carriage.number}, тип: #{carriage.class}, свободное пространство: #{carriage.free_volume}, занятое пространство: #{carriage.engaged_volume}"
+          elsif carriage.is_a?(PassengerCarriage)
+            puts "Вагон № #{carriage.number}, тип: #{carriage.class}, свободных мест: #{carriage.seats_free}, занятых мест: #{carriage.seats_engaged}"
+          else
+            puts "Нетиповой вагон"
+          end
+        end
       when 12
         begin
           puts @all_trains
