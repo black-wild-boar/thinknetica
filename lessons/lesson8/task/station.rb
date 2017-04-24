@@ -17,7 +17,7 @@ class Station
   end
 
   def each_train(&block)
-    self.train.values.each { |train| yield(train) }
+    train.values.each { |train| yield(train) }
   end
 
   def valid?

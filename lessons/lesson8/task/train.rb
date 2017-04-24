@@ -19,7 +19,7 @@ class Train
   end
 
   def each_carriage(&block)
-    self.carriages.values.each { |carriage| yield(carriage) }
+    carriages.values.each { |carriage| yield(carriage) }
   end
 
   def self.all
@@ -42,7 +42,7 @@ class Train
   end
   #++
   def set_current_station(station)
-    if self.route.stations.include?(station)
+    if route.stations.include?(station)
       self.current_station_id = station
     else
       puts 'В маршруте нет такой станции'
@@ -51,17 +51,17 @@ class Train
 
 #++
   def next_station
-    station_index = self.route.stations.index(self.current_station_id)
-    if (station_index + 1) < self.route.stations.count
-      self.current_station_id = self.route.stations.fetch(station_index + 1)
+    station_index = route.stations.index(current_station_id)
+    if (station_index + 1) < route.stations.count
+      self.current_station_id = route.stations.fetch(station_index + 1)
     else
       puts 'Конечная. На выход'
     end
   end
 #++
   def prev_station
-    if station_index > self.route.stations.index(self.route.stations.first)
-      self.current_station_id = self.route.stations.fetch(station_index - 1)
+    if station_index > route.stations.index(route.stations.first)
+      self.current_station_id = route.stations.fetch(station_index - 1)
     else
       puts 'Станция 0'
     end
@@ -72,8 +72,8 @@ class Train
   end
 #++
   def del_carriage(carriage)
-    if self.speed == 0
-      self.carriages.delete(carriage.number)
+    if speed == 0
+      carriages.delete(carriage.number)
     else
       puts 'Индиана Джонс пытается отцепить вагоны на бегу'
     end
@@ -84,13 +84,13 @@ class Train
   end
 #++
   def carriage_include?(carriage)
-    self.carriages.keys.include?(carriage.number)
+    carriages.keys.include?(carriage.number)
   end
 
   #++
   def add_carriage(carriage)
-    if self.speed == 0 && !carriage_include?(carriage)
-      self.carriages[carriage.number] = carriage
+    if speed == 0 && !carriage_include?(carriage)
+      carriages[carriage.number] = carriage
     else
       puts 'Бегущий поезд лани подобен'
     end
