@@ -6,10 +6,9 @@ require_relative 'cargo_train'
 require_relative 'carriage'
 require_relative 'passenger_carriage'
 require_relative 'cargo_carriage'
-#require_relative 'main_railway.rb'
 
 class Menu
-  attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages
+  attr_accessor :all_stations, :all_routes, :all_trains, :all_carriages, :action
 
 def initialize
   @stations  = {}
@@ -18,98 +17,154 @@ def initialize
   @carriages = {}
 end
 
+def menu_intro
+  puts "\n"
+  puts 'Рады приветствовать Вас на нашей трешовой станции!'
+  puts "\n"
+  puts 'Управление станциями. Жми 1'
+  puts 'Управление маршрутами. Жми 2'
+  puts 'Управление поездами. Жми 3'
+  puts 'Enter "exit" for exit'
+  gets.chomp
+end
+
+def menu_station
+  puts "\n"
+  puts 'Первый круг ада. Станции.'
+  puts 'Добавить. Жми 1'
+  puts 'Удалить. Жми 2'
+  puts 'Покажи мне их. Жми 3'
+  puts 'Узреть все поезда на станциях. Жми 4'
+  puts 'Enter "exit" for exit'
+  gets.chomp
+end
+
+def menu_route
+  puts "\n"
+  puts 'Второй круг ада. Маршруты.'
+  puts 'Добавить. Жми 1'
+  puts 'Удалить. Жми 2'
+  puts 'Покажи мне их все. Жми 3'
+  puts 'Добавить станцию радости. Жми 4'
+  puts 'Уничтожить станцию ужаса. Жми 5'
+
+  puts 'Enter "exit" for exit'
+  gets.chomp
+end
+
+def menu_train
+  puts "\n"
+  puts 'Третий круг ада. Поезда.'
+  puts 'Добавить. Жми 1'
+  puts 'Удалить. Жми 2'
+  puts 'Явитесь, поезда! Жми 3'
+  puts 'Послать поезд по маршруту. Жми 4'
+  puts 'Добавить вагон балласта. Жми 5'
+  puts 'Уничтожить балласта вагон. Жми 6'
+  puts 'Отправить поезд на станцию в даль. Жми 7'
+  puts 'Перевести поезд на следующую станцию. Жми 8'
+  puts 'Перевести поезд на предыдущую станцию. Жми 9'
+  puts 'Поезда на станции. Жми 10'
+  puts 'Все вагоны поездов. Жми 11'
+  puts 'Занять/Освободить пространство вагона. Жми 12'
+  puts 'Enter "exit" for exit'
+  key = gets.chomp
+end
+
+def gets_station
+  puts 'Enter station name'
+  station = gets.chomp
+end
+
+def gets_route
+  puts 'Enter route name'
+  route = gets.chomp
+end
+
+def gets_carriage
+  puts 'Enter carrige name'
+  carriage = gets.chomp
+end  
+
+def gets_train
+  puts 'Enter train name'
+  train = gets.chomp
+end
+
 def main_menu
-  key = ''
+ # choice = ''
 
-  while key != 'exit' do
-    menu_intro
-    key = gets.chomp
+  choice ||= intro  
 
-    break if key == 'exit'
-
-    case key.to_i
-    when 1
-      stations_menu
-    when 2
-      routes_menu
-    when 3
-      trains_menu
+  while do choice# choice != 'exit' do
+    if choice !='exit'
+    #break if choice == 'exit'
+    #intro
+      #choice = case intro
+      case intro
+      when '1'
+        stations_menu
+      when '2'
+        routes_menu
+      when '3'
+        trains_menu
+      else
+        puts 'Кто здесь?'
+      end
     else
-      puts 'Кто здесь?'
+      break
     end
   end
 end
 
 def stations_menu
 
-  key = ''
-  while key != 'exit' do
-    puts "\n"
+=begin  choice = ''
+  while choice !='exit' do
+    
+    #unless 'exit' menu_station
 
-    puts 'Первый круг ада. Станции.'
-    puts 'Добавить. Жми 1'
-    puts 'Удалить. Жми 2'
-    puts 'Покажи мне их. Жми 3'
-    puts 'Узреть все поезда на станциях. Жми 4'
-    puts 'Для выхода введи exit'
-    key = gets.chomp
-
-    case key.to_i
-    when 1
+    #choice = case @action
+    case @action 
+    when '1'
       begin
-        puts 'Введи имя этой прекрасной станции'
-        station = gets.chomp
-        station = Station.new(station)
+        station = Station.new(gets_station)
       rescue => e
         puts e.inspect
         retry
       end
       @stations[station.name] = station
-    when 2
-      puts 'Введи имя этой прекрасной станции'
-      station = gets.chomp
-      if @stations.keys.include?(station)
+    when '2'
+      if @stations.keys.include?(gets_station)
         @stations.delete(station)
       else
         puts 'Нет такой станции. Вообще нет)'
       end
-    when 3
-      puts 'Узри же, смертный, ярость станций'
-      puts @stations
-    when 4
-      puts 'Введи название станции'
-      station = gets.chomp
-      @stations[station].each_train do |train|
-        puts "Поезд № #{train.number}, \
-        тип: #{train.class}, \
-        количество вагонов: #{train.carriages.length}"
+    when '3'
+      puts "List of stations #{@stations}"
+    when '4'
+      station_object = gets_station
+      @stations[station_object].each_train do |train|
+        puts "Train N: #{train.number}, \
+        type: #{train.class}, \
+        carriage count: #{train.carriages.length}"
       end
     else
       puts 'Станции такого не умеют'
-    end
-  end
-end
+    end #case
+  end #while
+=end  #main_menu
+end #def
 
 def routes_menu
 
   key = ''
   while key != 'exit' do
-    puts "\n"
-    puts 'Второй круг ада. Маршруты.'
-    puts 'Добавить. Жми 1'
-    puts 'Удалить. Жми 2'
-    puts 'Покажи мне их все. Жми 3'
-    puts 'Добавить станцию радости. Жми 4'
-    puts 'Уничтожить станцию ужаса. Жми 5'
-
-    puts 'Для выхода введи exit'
-    key = gets.chomp
-
+    menu_route
     case key.to_i
     when 1
-      puts 'Как назвать хочешь ты его?'
-      route = gets.chomp
-      puts "Станций перечень #{@stations}"
+      gets_route
+      puts "List of stations #{@stations}"
       puts 'Введи имя начала'
       first = gets.chomp
       puts 'Введи имя конца'
@@ -123,8 +178,7 @@ def routes_menu
         end
       end
     when 2
-      puts 'Имя. Введи его имя!'
-      route = gets.chomp
+      gets_route
       if !@routes.keys.include?(route)
         puts 'Ты чего удалять-то пытаешься... нету его и не было никогда'
       else
@@ -132,25 +186,19 @@ def routes_menu
         @routes.delete(route)
       end
     when 3
-      puts 'Маршруты-отступники'
-      puts @routes
+      puts "List of routes: #{@routes}"
     when 4
       puts 'Месть павших маршрутов. Добавление станции'
-      puts @routes
-      puts 'Назови маршрут'
-      route = gets.chomp
-      puts 'Давай сюда имя станции'
-      station = gets.chomp
+      gets_route
+      gets_station
       if @routes.keys.include?(route) && @stations.keys.include?(station)
         @routes[route].add_station(station)
       else
         puts 'Нееееттт!!! Нет маршрута! Или есть уже такая станция'
       end
     when 5
-      puts 'А какой-такой маршрут для удаления станции'
-      route = gets.chomp
-      puts 'Скажи имя грешника'
-      station = gets.chomp
+      gets_route
+      gets_station
       if @routes.include?(route) && @routes[route].stations.include?(station)
         @routes[route].del_station(station)
       else
@@ -166,29 +214,11 @@ def trains_menu
 
   key = ''
   while key != 'exit' do
-    puts "\n"
-    puts 'Третий круг ада. Поезда.'
-    puts 'Добавить. Жми 1'
-    puts 'Удалить. Жми 2'
-    puts 'Явитесь, поезда! Жми 3'
-    puts 'Послать поезд по маршруту. Жми 4'
-    puts 'Добавить вагон балласта. Жми 5'
-    puts 'Уничтожить балласта вагон. Жми 6'
-    puts 'Отправить поезд на станцию в даль. Жми 7'
-    puts 'Перевести поезд на следующую станцию. Жми 8'
-    puts 'Перевести поезд на предыдущую станцию. Жми 9'
-    puts 'Поезда на станции. Жми 10'
-    puts 'Все вагоны поездов. Жми 11'
-    puts 'Занять/Освободить пространство вагона. Жми 12'
-    puts 'Для выхода введи exit'
-    key = gets.chomp
-
+    menu_train
     case key.to_i
     when 1
       begin
-        puts 'И как мы назовём этот поезд?'
-        train = gets.chomp
-        puts 'Добавим немного красок'
+        gets_train
         puts 'Грузовой (нажми 1), Пассажирский (нажми 2)'
         train_type = gets.chomp
   
@@ -214,38 +244,29 @@ def trains_menu
         puts 'Опять пытаешь обмануть программу?'
       end
     when 2
-      puts 'Поезда все.'
-      puts @trains
-      puts 'Имя. Введи имя для казни!'
-      train = gets.chomp
+      puts "Перечень поездов: #{@trains}"
+      gets_train
       if @trains.keys.include?(train)
         @trains.delete(train)
       else
         puts 'Таких не держим'
       end
     when 3
-      puts 'Поезда. Месть павших'
-      puts @trains
+      puts "Перечень поездов: #{@trains}"
     when 4
-      puts @trains
-      puts 'Выбери поезд'
-      train = gets.chomp
-      puts @routes
-      puts 'Куда же его послать?'
-      route = gets.chomp
+      gets_train
+      puts "List of routes: #{@routes}"
+      gets_route
       if @trains.keys.include?(train) && @routes.keys.include?(route)
         @trains[train].add_route(@routes[route])
-        puts @trains
       else
         puts 'Поезд из другой реальности и маршрут никак не разобрать'
       end
     when 5
       begin
-        puts @trains
-        puts 'Выбери уже поезд'
-        train = gets.chomp
-        puts 'Ну и вагон назови'
-        carriage = gets.chomp
+        puts "Перечень поездов: #{@trains}"
+        gets_train
+        gets_carriage
         Carriage.new(carriage)
       rescue => e
         puts e.inspect
@@ -265,21 +286,17 @@ def trains_menu
         puts 'Это не тот поезд'
       end
     when 6
-      puts @trains
-      puts 'Выбери уже поезд'
-      train = gets.chomp
-      puts 'Вагон на удаление'
-      carriage = gets.chomp
+      puts "Перечень поездов: #{@trains}"
+      gets_train
+      gets_carriage
       if @trains.keys.include?(train) && @trains[train].carriage_include?(@carriages[carriage])
         @trains[train].del_carriage(@carriages[carriage])
       else
         puts 'эбсэнт или поезд или вагон'
       end
     when 7
-      puts 'А пошлю ка я поезд'
-      train = gets.chomp
-      puts 'На станцию'
-      station = gets.chomp
+      gets_train
+      gets_station
       if @trains.keys.include?(train) && @stations.keys.include?(station)
         @trains[train].set_current_station(station)
         @stations[station].add_train(@trains[train])
@@ -287,23 +304,19 @@ def trains_menu
         puts 'Нет такого поезда или станции'
       end
     when 8
-      puts 'Выбери поезд'
-      train = gets.chomp
+      gets_train
       @trains[train].next_station
     when 9
-      puts 'Выбери поезд'
-      train = gets.chomp
+      gets_train
       @trains[train].prev_station
     when 10
       puts "Поезда #{@trains}"
-      puts 'Хочу найти поезда на станции'
-      station = gets.chomp
+      gets_station
       @trains.select do |key, value|
         puts "#{key} : #{value}" if value.current_station_id == station
       end
     when 11
-      puts 'Выбери поезд'
-      train = gets.chomp
+      gets_train
 
       @trains[train].each_carriage do |carriage|
         if carriage.is_a?(CargoCarriage)
@@ -320,11 +333,9 @@ def trains_menu
       end
     when 12
       begin
-        puts @trains
-        puts 'Выбери уже поезд'
-        train = gets.chomp
-        puts 'Ну и вагон назови'
-        carriage = gets.chomp
+        puts "Перечень поездов: #{@trains}"
+        gets_train
+        gets_carriage
         Carriage.new(carriage)
       rescue => e
         puts e.inspect
