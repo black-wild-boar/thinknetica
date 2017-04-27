@@ -1,5 +1,5 @@
 module CompanyName
-  protected
 
+  protected
   attr_accessor :company_name
 end

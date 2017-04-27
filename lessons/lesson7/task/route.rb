@@ -7,7 +7,7 @@ class Route
 
   def add_station(station)
     if self.stations.include?(station)
-      puts "Есть уже такая станция или маршрута нет"
+      puts "Current station exist"
     else
       self.stations.insert(-2, station)
     end
@@ -15,7 +15,7 @@ class Route
 
   def del_station(station)
     if !self.stations.include?(station)
-      puts "Нет станции на маршруте"
+      puts "No station on route"
     else
       self.stations.delete(station)
     end

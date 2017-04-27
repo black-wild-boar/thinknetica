@@ -27,7 +27,7 @@ class Station
   end
 
   def validate!
-    raise "Неверный формат номера станции" if @name !~ STATION_PATTERN
+    raise "Wrong station name format" if @name !~ STATION_PATTERN
     true
   end
 

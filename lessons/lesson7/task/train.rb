@@ -22,7 +22,6 @@ class Train
   def each_carriage(&block)
     self.carriages.values.each { |carriage| yield(carriage)}
   end
-  end
 
   def self.all
     @@all_trains
@@ -35,74 +34,71 @@ class Train
   end
 
   def validate!
-    raise "Неверный формат номера поезда" if @number !~ TRAIN_PATTERN
+    raise "Wrong train number" if @number !~ TRAIN_PATTERN
     true
   end
 
   def self.find(number)
     @@all_trains[number]
   end
-  #++
+
   def set_current_station(station)
     if self.route.stations.include?(station)
       self.current_station_id = station
     else
-      puts "В маршруте нет такой станции"
+      puts "No station on route"
     end
   end
 
-#++
   def next_station
     if (self.route.stations.index(self.current_station_id) + 1) < self.route.stations.count
       self.current_station_id = self.route.stations.fetch(self.route.stations.index(self.current_station_id)+1)
     else
-      puts "Конечная. На выход"
+      puts "Last station"
     end
   end
-#++
+
   def prev_station
     if self.route.stations.index(self.current_station_id) > self.route.stations.index(self.route.stations.first)
       self.current_station_id = self.route.stations.fetch(self.route.stations.index(self.current_station_id)-1)
     else
-      puts "Станция 0"
+      puts "First station"
     end
   end
 
   def speed_show
-    puts "Текущая скорость: #{@speed}"
+    puts "Current speed: #{@speed}"
   end
-#++
+
   def del_carriage(carriage)
     if self.speed == 0 
       self.carriages.delete(carriage.number)
     else
-      puts "Индиана Джонс пытается отцепить вагоны на бегу"      
+      puts "Cann't delete carriage if speed > 0"      
     end
   end
-#++
+
   def add_route(route_name)
       self.route = route_name
   end
-#++
+
   def carriage_include?(carriage)
     self.carriages.keys.include?(carriage.number)
   end
 
-  #++
   def add_carriage(carriage)
     if self.speed == 0 && !carriage_include?(carriage)
       self.carriages[carriage.number] = carriage
     else
-      puts "Бегущий поезд лани подобен"      
+      puts "Cann't add carriage if speed > 0"      
     end
   end
 
-#то, что должны наследовать потомки
 protected
 
   def speed_up(speed)
     if speed <= 0
-      puts "Скорость не может быть меньше 0"
+      puts "Speed must be > 0"
     else
       @speed += speed
     end
@@ -110,10 +106,10 @@ protected
 
   def speed_down(speed)
     if speed < 0 || (self.speed - speed) <0
-      puts "Скорость не может быть меньше 0"
+      puts "Speed must be > 0"
     else
       @speed -= speed
-      puts "Поезд остановлен" if self.speed == 0  
+      puts "Speed = 0" if self.speed == 0  
     end
   end
 end

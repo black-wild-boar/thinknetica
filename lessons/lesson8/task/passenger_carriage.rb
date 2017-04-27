@@ -1,4 +1,5 @@
 class PassengerCarriage < Carriage
+
   attr_reader :seats_count, :seats_engaged
 
   def initialize(number, seats_count, seats_engaged = 0)
@@ -20,6 +21,5 @@ class PassengerCarriage < Carriage
   end
 
   private
-
   attr_writer :seats_count, :seats_engaged
 end
