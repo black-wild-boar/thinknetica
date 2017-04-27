@@ -22,10 +22,11 @@ class Carriage
   end
 
   def validate!
-    raise "Wrong train name format" if @number !~ CARRIAGE_PATTERN
+    raise 'Wrong train name format' if @number !~ CARRIAGE_PATTERN
     true
   end
 
-protected
+  protected
+
   attr_writer :number
 end

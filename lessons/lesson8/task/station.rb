@@ -10,14 +10,14 @@ class Station
   @@all_stations = {}
 
   def initialize(name)
-    @name                = name
+    @name = name
     validate!
     @@all_stations[name] = self
     @train = {}
   end
 
-  def each_train(&block)    
-    self.train.values.each { |train| yield(train) }
+  def each_train
+    train.values.each { |train| yield(train) }
   end
 
   def valid?
@@ -27,7 +27,7 @@ class Station
   end
 
   def validate!
-    raise "Wrong station name format" if @name !~ STATION_PATTERN
+    raise 'Wrong station name format' if @name !~ STATION_PATTERN
     true
   end
 
