@@ -200,9 +200,9 @@ class Menu
     end
   end
 
-#динамический хэш наполнение по условию
-#есть общий хэш, в зависимости от условия выводится определенный диапазон ключей/значений
-TRAIN_MENU = {}
+  # динамический хэш наполнение по условию
+  # есть общий хэш, в зависимости от условия выводится определенный диапазон ключей/значений
+  TRAIN_MENU = {}.freeze
 
   def m_trains_stations
     puts '4. Add route'
@@ -216,8 +216,7 @@ TRAIN_MENU = {}
     puts '12. Employ/release carriage space'
   end
 
-  def m_trains_wagons
-  end
+  def m_trains_wagons; end
 
   def m_trains
     puts "\n"
@@ -225,13 +224,20 @@ TRAIN_MENU = {}
     puts '1. Add'
     puts '2. Remove'
     puts '3. Show all'
+    puts '4. Add route'
+    puts '5. Add carriage'
+    puts '6. Remove carriage'
+    puts '7. Set current station'
+    puts '8. Next station'
+    puts '9. Prev station'
+    puts '10. Show trains on station'
+    puts '11. Show all carriage'
+    puts '12. Employ/release carriage space'
     puts 'Enter exit to escape'
     @choice = gets.chomp
   end
 
-
-
-  def m_add_train_type(train)
+  def m_add_train_type
     puts 'Cargo (enter 1), passenger (enter 2)'
     train_type = gets.chomp
     trains[train] = case train_type
@@ -243,14 +249,19 @@ TRAIN_MENU = {}
 
   def m_add_train
     begin
-      puts 'Enter train name'
+      puts '1Enter train name'
       train = gets.chomp
       Train.new(train)
     rescue => e
       puts e.inspect
       retry
     end
-    @trains.key?(train) ? (p 'Train exist') : m_add_train_type(train)
+    if @trains.key?(train)
+      puts 'Train exist'
+    else
+      m_add_train_type
+    end
+    #@trains.key?(train) ? (p 'Train exist') : m_add_train_type
   end
 
   def m_remove_train
@@ -306,6 +317,10 @@ TRAIN_MENU = {}
     end
   end
 
+  def m_check_train_key(train)
+    puts 'Wrong train or carriage!' if @trains.key?(train)
+  end
+
   # вынести @trains.key?(train) puts "Train not exist"
   # CONST
   def m_remove_wagon
@@ -328,7 +343,7 @@ TRAIN_MENU = {}
     puts 'Enter station name'
     station = gets.chomp
     if @trains.key?(train) && @stations.key?(station)
-      @trains[train].set_current_station(station)
+      @trains[train].go_current_station(station)
       @stations[station].add_train(@trains[train])
     else
       puts 'Wrong train or station!'
@@ -375,12 +390,12 @@ TRAIN_MENU = {}
     train = gets.chomp
 
     @trains[train].each_carriage do |wagon|
-      puts = case wagon.class.to_s
+      case wagon.class.to_s
              when 'PassengerCarriage' then m_passenger_free_engaged(wagon)
              when 'CargoCarriage' then m_cargo_free_engaged(wagon)
              else
                puts 'Untyped carriage'
-      end
+              end
     end
   end
 
@@ -435,7 +450,7 @@ TRAIN_MENU = {}
         '7' => proc { m_current_station }, '8' => proc { m_next_station },
         '9' => proc { m_prev_station }, '10' => proc { m_trains_on_station },
         '11' => proc { m_carriages_list }, '12' => proc { m_wagon_space }
-                }
+      }
       break if @choice == 'exit'
       if choices[@choice].nil?
         puts 'Wrong choice!'

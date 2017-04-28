@@ -7,12 +7,12 @@ class Station
 
   STATION_PATTERN = /^[a-zA-Z0-9]{2,}$/
 
-  @@all_stations = {}
+  @all_stations = {}
 
   def initialize(name)
     @name = name
     validate!
-    @@all_stations[name] = self
+    @all_stations[name] = self
     @train = {}
   end
 
@@ -40,6 +40,6 @@ class Station
   end
 
   def self.all
-    @@all_stations
+    @all_stations
   end
 end

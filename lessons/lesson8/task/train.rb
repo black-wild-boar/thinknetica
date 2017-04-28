@@ -8,14 +8,14 @@ class Train
 
   TRAIN_PATTERN = /^(\w{3}|[a-z]{3})+(-?)+(\d{2}|[a-z]{2})$/
 
-  @@all_trains = {}
+  @all_trains = {}
 
   def initialize(number)
     @number = number
     validate!
     @speed               = 0
     @carriages           = {}
-    @@all_trains[number] = self
+    @all_trains[number] = self
   end
 
   def each_carriage
@@ -23,7 +23,7 @@ class Train
   end
 
   def self.all
-    @@all_trains
+    @all_trains
   end
 
   def valid?
@@ -38,10 +38,10 @@ class Train
   end
 
   def self.find(number)
-    @@all_trains[number]
+    @all_trains[number]
   end
 
-  def set_current_station(station)
+  def go_current_station(station)
     if route.stations.include?(station)
       self.current_station_id = station
     else
@@ -49,17 +49,21 @@ class Train
     end
   end
 
+  def station_index
+    route.stations.index(current_station_id)
+  end
+
   def next_station
-    if (route.stations.index(current_station_id) + 1) < route.stations.count
-      self.current_station_id = route.stations.fetch(route.stations.index(current_station_id) + 1)
+    if (station_index + 1) < route.stations.count
+      self.current_station_id = route.stations.fetch(station_index + 1)
     else
       puts 'Last station'
     end
   end
 
   def prev_station
-    if route.stations.index(current_station_id) > route.stations.index(route.stations.first)
-      self.current_station_id = route.stations.fetch(route.stations.index(current_station_id) - 1)
+    if station_index > route.stations.index(route.stations.first)
+      self.current_station_id = route.stations.fetch(station_index - 1)
     else
       puts 'First station'
     end
