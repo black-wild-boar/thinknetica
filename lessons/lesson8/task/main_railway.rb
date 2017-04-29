@@ -103,15 +103,20 @@ class Menu
   def stations_menu
     loop do
       m_stations
-      choices = { '1' => proc { m_add_station },
-                  '2' => proc { m_remove_station },
-                  '3' => proc { m_staions_list },
-                  '4' => proc { m_train_on_station } }
+      choices = { '1' => m_add_station,
+                  '2' => m_remove_station,
+                  '3' => m_staions_list,
+                  '4' => m_train_on_station }
+      # choices = { '1' => proc { m_add_station },
+      #             '2' => proc { m_remove_station },
+      #             '3' => proc { m_staions_list },
+      #             '4' => proc { m_train_on_station } }
       break if @choice == 'exit'
       if choices[@choice].nil?
         puts 'Wrong choice!'
       else
-        choices[@choice].call
+        choices[@choice]
+        # choices[@choice].call
       end
     end
   end
@@ -200,9 +205,9 @@ class Menu
     end
   end
 
-#динамический хэш наполнение по условию
-#есть общий хэш, в зависимости от условия выводится определенный диапазон ключей/значений
-TRAIN_MENU = {}
+# динамический хэш наполнение по условию
+# есть общий хэш, в зависимости от условия выводится определенный диапазон ключей/значений
+  TRAIN_MENU = {}.freeze
 
   def m_trains_stations
     puts '4. Add route'
@@ -216,8 +221,7 @@ TRAIN_MENU = {}
     puts '12. Employ/release carriage space'
   end
 
-  def m_trains_wagons
-  end
+  def m_trains_wagons; end
 
   def m_trains
     puts "\n"
@@ -227,9 +231,7 @@ TRAIN_MENU = {}
     puts '3. Show all'
     puts 'Enter exit to escape'
     @choice = gets.chomp
-  end
-
-
+  end  
 
   def m_add_train_type(train)
     puts 'Cargo (enter 1), passenger (enter 2)'
@@ -435,7 +437,7 @@ TRAIN_MENU = {}
         '7' => proc { m_current_station }, '8' => proc { m_next_station },
         '9' => proc { m_prev_station }, '10' => proc { m_trains_on_station },
         '11' => proc { m_carriages_list }, '12' => proc { m_wagon_space }
-                }
+      }
       break if @choice == 'exit'
       if choices[@choice].nil?
         puts 'Wrong choice!'
