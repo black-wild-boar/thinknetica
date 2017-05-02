@@ -204,14 +204,8 @@ class Menu
       end
     end
   end
-
-<<<<<<< HEAD
-# динамический хэш наполнение по условию
-# есть общий хэш, в зависимости от условия выводится определенный диапазон ключей/значений
-=======
   # динамический хэш наполнение по условию
   # есть общий хэш, в зависимости от условия выводится определенный диапазон ключей/значений
->>>>>>> 4f5b180f9adb6bb102983a45913ba4da308e7a06
   TRAIN_MENU = {}.freeze
 
   def m_trains_stations
@@ -245,15 +239,9 @@ class Menu
     puts '12. Employ/release carriage space'
     puts 'Enter exit to escape'
     @choice = gets.chomp
-<<<<<<< HEAD
-  end  
-
-  def m_add_train_type(train)
-=======
   end
 
   def m_add_train_type
->>>>>>> 4f5b180f9adb6bb102983a45913ba4da308e7a06
     puts 'Cargo (enter 1), passenger (enter 2)'
     train_type = gets.chomp
     trains[train] = case train_type
@@ -277,7 +265,7 @@ class Menu
     else
       m_add_train_type
     end
-    #@trains.key?(train) ? (p 'Train exist') : m_add_train_type
+    # @trains.key?(train) ? (p 'Train exist') : m_add_train_type
   end
 
   def m_remove_train
@@ -407,13 +395,15 @@ class Menu
 
     @trains[train].each_carriage do |wagon|
       case wagon.class.to_s
-             when 'PassengerCarriage' then m_passenger_free_engaged(wagon)
-             when 'CargoCarriage' then m_cargo_free_engaged(wagon)
-             else
-               puts 'Untyped carriage'
-              end
+      when 'PassengerCarriage' then m_passenger_free_engaged(wagon)
+      when 'CargoCarriage' then m_cargo_free_engaged(wagon)
+      else
+        puts 'Untyped carriage'
+      end
     end
   end
+
+  def m_wagon_type; end
 
   def m_wagon_space
     begin
@@ -430,49 +420,77 @@ class Menu
     puts 'Employ. Enter 1'
     puts 'Release. Enter 2'
     choice = gets.chomp.to_i
-    case choice
-    when 1
-      if @trains[train] && @trains[train].is_a?(PassengerTrain)
+
+    puts 'Enter count'
+    volume = gets.chomp.to_i
+
+    # tmp_types = {@trains[train] => @trains[train].class}
+    # case tmp_types
+    # when tmp_types.value = PassengerTrain then
+    # вынести в отдельный модель проверку на класс поезда с передачей параметра == объекта поезд
+    if @trains[train]
+      case @trains[train].class.to_s
+      when 'PassengerTrain'
         @trains[train].carriages[carriage].occupie_seat
-      elsif @trains[train] && @trains[train].is_a?(CargoTrain)
-        puts 'Enter count'
-        volume = gets.chomp.to_i
+      when 'CargoTrain'
         @trains[train].carriages[carriage].occupie_volume(volume)
       else
         puts 'Untyped carriage'
       end
-    when 2
-      if @trains[train] && @trains[train].is_a?(PassengerTrain)
-        @trains[train].carriages[carriage].release_seat
-      elsif @trains[train] && @trains[train].is_a?(CargoTrain)
-        puts 'Enter count'
-        volume = gets.chomp.to_i
-        @trains[train].carriages[carriage].release_volume(volume)
-      else
-        puts 'Untyped carriage'
-      end
     else
-      puts 'Wrong choice!'
+      puts 'No such train'
     end
+
+    # case choice
+    # when 1
+    #   if @trains[train] && @trains[train].is_a?(PassengerTrain)
+    #     @trains[train].carriages[carriage].occupie_seat
+    #   elsif @trains[train] && @trains[train].is_a?(CargoTrain)
+    #     puts 'Enter count'
+    #     volume = gets.chomp.to_i
+    #     @trains[train].carriages[carriage].occupie_volume(volume)
+    #   else
+    #     puts 'Untyped carriage'
+    #   end
+    # when 2
+    #   if @trains[train] && @trains[train].is_a?(PassengerTrain)
+    #     @trains[train].carriages[carriage].release_seat
+    #   elsif @trains[train] && @trains[train].is_a?(CargoTrain)
+    #     puts 'Enter count'
+    #     volume = gets.chomp.to_i
+    #     @trains[train].carriages[carriage].release_volume(volume)
+    #   else
+    #     puts 'Untyped carriage'
+    #   end
+    # else
+    #   puts 'Wrong choice!'
+    # end
   end
 
+# вынести метод меню с передачей значение == методу (разбить по подпунктам)
   def trains_menu
     loop do
       m_trains
       choices = {
-        '1' => proc { m_add_train }, '2' => proc { m_remove_train },
-        '3' => proc { m_trains_list }, '4' => proc { m_train_add_route },
-        '5' => proc { m_add_wagon }, '6' => proc { m_remove_wagon },
-        '7' => proc { m_current_station }, '8' => proc { m_next_station },
-        '9' => proc { m_prev_station }, '10' => proc { m_trains_on_station },
-        '11' => proc { m_carriages_list }, '12' => proc { m_wagon_space }
+        # '1' => proc { m_add_train }, '2' => proc { m_remove_train },
+        # '3' => proc { m_trains_list }, '4' => proc { m_train_add_route },
+        # '5' => proc { m_add_wagon }, '6' => proc { m_remove_wagon },
+        # '7' => proc { m_current_station }, '8' => proc { m_next_station },
+        # '9' => proc { m_prev_station }, '10' => proc { m_trains_on_station },
+        # '11' => proc { m_carriages_list }, '12' => proc { m_wagon_space }
+        '1' => m_add_train, '2' => m_remove_train, '3' => m_trains_list,
+        '4' => m_train_add_route, '5' => m_add_wagon, '6' => m_remove_wagon,
+        '7' => m_current_station, '8' => m_next_station,
+        '9' => m_prev_station, '10' => m_trains_on_station,
+        '11' => m_carriages_list, '12' => m_wagon_space
       }
       break if @choice == 'exit'
-      if choices[@choice].nil?
-        puts 'Wrong choice!'
-      else
-        choices[@choice].call
-      end
+      choices[@choice].call unless choices[@choice].nil?
+      # if choices[@choice].nil?
+      #   puts 'Wrong choice!'
+      # else
+      #   choices[@choice].call
+      # end
     end
   end
 end
