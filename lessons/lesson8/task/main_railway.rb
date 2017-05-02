@@ -322,13 +322,12 @@ class Menu
   end
 
   def m_check_train_key(train)
-    puts 'Wrong train or carriage!' if @trains.key?(train)
+    puts 'Wrong train!' if @trains.key?(train)
   end
 
   # вынести @trains.key?(train) puts "Train not exist"
   # CONST
   def m_remove_wagon
-    puts @trains
     puts 'Enter train name'
     train = gets.chomp
     puts 'Enter carriage name'
@@ -405,41 +404,65 @@ class Menu
 
   def m_wagon_type; end
 
-  def m_wagon_space
-    begin
-      puts "List of trains #{@trains}"
-      puts 'Enter train name'
-      train = gets.chomp
-      puts 'Enter carriage name'
-      carriage = gets.chomp
-      Carriage.new(carriage)
-    rescue => e
-      puts e.inspect
-      retry
-    end
-    puts 'Employ. Enter 1'
-    puts 'Release. Enter 2'
+  def m_wagon_volume(train, carriage)
+    puts 'Employ. Enter 1/Release. Enter 2'
     choice = gets.chomp.to_i
-
     puts 'Enter count'
     volume = gets.chomp.to_i
-
-    # tmp_types = {@trains[train] => @trains[train].class}
-    # case tmp_types
-    # when tmp_types.value = PassengerTrain then
-    # вынести в отдельный модель проверку на класс поезда с передачей параметра == объекта поезд
-    if @trains[train]
-      case @trains[train].class.to_s
-      when 'PassengerTrain'
-        @trains[train].carriages[carriage].occupie_seat
-      when 'CargoTrain'
-        @trains[train].carriages[carriage].occupie_volume(volume)
-      else
-        puts 'Untyped carriage'
-      end
+    case @trains[train].class.to_s
+    when 'PassengerTrain'
+      @trains[train].carriages[carriage].occupie_seat
+    when 'CargoTrain'
+      @trains[train].carriages[carriage].occupie_volume(volume)
     else
-      puts 'No such train'
+      puts 'Untyped carriage'
     end
+  end
+
+  def check_carriage_name
+    puts 'Enter carriage name'
+    carriage = gets.chomp
+    Carriage.new(carriage)
+  rescue => e
+    puts e.inspect
+    retry
+  end
+
+  def m_wagon_space
+    # begin
+    puts 'Enter train name'
+    train = gets.chomp
+    check_carriage_name
+    #   puts 'Enter carriage name'
+    #   carriage = gets.chomp
+    #   Carriage.new(carriage)
+    # rescue => e
+    #   puts e.inspect
+    #   retry
+    # end
+    m_wagon_volume(train, carriage)
+    # puts 'Employ. Enter 1/Release. Enter 2'
+    # choice = gets.chomp.to_i
+
+    # puts 'Enter count'
+    # volume = gets.chomp.to_i
+
+    # # tmp_types = {@trains[train] => @trains[train].class}
+    # # case tmp_types
+    # # when tmp_types.value = PassengerTrain then
+    # # вынести в отдельный модель проверку на класс поезда с передачей параметра == объекта поезд
+    # #    if @trains[train]
+    # case @trains[train].class.to_s
+    # when 'PassengerTrain'
+    #   @trains[train].carriages[carriage].occupie_seat
+    # when 'CargoTrain'
+    #   @trains[train].carriages[carriage].occupie_volume(volume)
+    # else
+    #   puts 'Untyped carriage'
+    # end
+    #   else
+    #     puts 'No such train'
+    #    end
 
     # case choice
     # when 1
@@ -467,7 +490,7 @@ class Menu
     # end
   end
 
-# вынести метод меню с передачей значение == методу (разбить по подпунктам)
+  # вынести метод меню с передачей значение == методу (разбить по подпунктам)
   def trains_menu
     loop do
       m_trains
