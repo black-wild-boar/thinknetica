@@ -41,7 +41,7 @@ class Train
     @all_trains[number]
   end
 
-  def set_current_station(station)
+  def go_current_station(station)
     if route.stations.include?(station)
       self.current_station_id = station
     else
