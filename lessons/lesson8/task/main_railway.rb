@@ -8,9 +8,6 @@ require_relative 'passenger_carriage'
 require_relative 'cargo_carriage'
 
 class Menu
-  # TRAIN_TYPES = { '1': 'CargoTrain', '2': 'PassengerTrain'}
-  # WAGON_TYPES = { '1': 'CargoCarriage', '2': 'PassengerCarriage'}
-
   attr_accessor :stations, :routes, :trains, :carriages, :choice
 
   def initialize
@@ -21,40 +18,26 @@ class Menu
   end
 
   def menu_intro
-    puts "\n"
-    puts 'Welcome to railway station system! (choose menu number)'
-    puts "\n"
-    puts '1. Stations'
-    puts '2. Routes'
-    puts '3. Trains'
-    puts 'Enter exit to escape'
-    @choice = gets.chomp
+    puts "\nWelcome to railway station system! (choose menu number)"
+    puts "1. Stations\n2. Routes\n3. Trains\nEnter exit to escape"
+    @choice =
+      { '1' => proc { stations_menu }, '2' => proc { routes_menu },
+        '3' => proc { trains_menu }, 'exit' => proc { puts 'Bye!' } }
   end
 
   def main_menu
-    loop do
-      menu_intro
-      break if @choice == 'exit'
-      case @choice
-      when '1' then stations_menu
-      when '2' then routes_menu
-      when '3' then trains_menu
-      else
-        puts 'Wrong choice!'
-      end
-      @choice = ''
-    end
+    menu_intro
+    @choice[gets.chomp].call
   end
 
   def m_stations
-    puts "\n"
-    puts 'Stations (choose menu number)'
-    puts '1. Add'
-    puts '2. Remove'
-    puts '3. Show all'
-    puts '4. Show all train on station'
-    puts 'Enter exit to escape'
-    @choice = gets.chomp
+    puts "\nStations (choose menu number)"
+    puts "1. Add\n2. Remove\n3. Show all"
+    puts "4. Show all train on station\nEnter exit to escape"
+    @choice =
+      { '1' => proc { m_add_station }, '2' => proc { m_remove_station },
+        '3' => proc { m_staions_list }, '4' => proc { m_train_on_station },
+        'exit' => proc { main_menu } }
   end
 
   def m_add_station
@@ -101,36 +84,18 @@ class Menu
   end
 
   def stations_menu
-    loop do
-      m_stations
-      choices = { '1' => m_add_station,
-                  '2' => m_remove_station,
-                  '3' => m_staions_list,
-                  '4' => m_train_on_station }
-      # choices = { '1' => proc { m_add_station },
-      #             '2' => proc { m_remove_station },
-      #             '3' => proc { m_staions_list },
-      #             '4' => proc { m_train_on_station } }
-      break if @choice == 'exit'
-      if choices[@choice].nil?
-        puts 'Wrong choice!'
-      else
-        choices[@choice]
-        # choices[@choice].call
-      end
-    end
+    m_stations
+    @choice[gets.chomp].call
   end
 
   def m_routes
-    puts "\n"
-    puts 'Routes (choose menu number)'
-    puts '1. Add'
-    puts '2. Remove'
-    puts '3. Show all'
-    puts '4. Add station'
-    puts '5. Remove station'
-    puts 'Enter exit to escape'
-    @choice = gets.chomp
+    puts "\nRoutes (choose menu number)"
+    puts "1. Add\n2. Remove\n3. Show all\n4. Add station"
+    puts "5. Remove station\nEnter exit to escape"
+    @choice =
+      { '1' => proc { m_add_route }, '2' => proc { m_remove_route },
+        '3' => proc { m_routes_list }, '4' => proc { m_route_add_station },
+        '5' => proc { m_route_remove_station }, 'exit' => proc { main_menu } }
   end
 
   def m_add_route_check; end
@@ -138,16 +103,11 @@ class Menu
   def m_add_route
     puts 'Enter route name'
     route = gets.chomp
-    puts "List of stations #{@stations}"
     puts 'Enter first station name'
     first = gets.chomp
     puts 'Enter last station name'
     last = gets.chomp
-    if !@routes.include?(route) && @stations.key?(first && last)
-      @routes[route] = Route.new(first, last)
-    else
-      puts 'Wrong route or station'
-    end
+    @routes[route] = Route.new(first, last) if @stations.key?(first && last)
   end
 
   def m_remove_route
@@ -189,83 +149,43 @@ class Menu
   end
 
   def routes_menu
-    loop do
-      m_routes
-      choices = { '1' => proc { m_add_route },
-                  '2' => proc { m_remove_route },
-                  '3' => proc { m_routes_list },
-                  '4' => proc { m_route_add_station },
-                  '5' => proc { m_route_remove_station } }
-      break if @choice == 'exit'
-      if choices[@choice].nil?
-        puts 'Wrong choice!'
-      else
-        choices[@choice].call
-      end
-    end
+    m_routes
+    @choice[gets.chomp].call
   end
+  # ??? как вариант
   # динамический хэш наполнение по условию
   # есть общий хэш, в зависимости от условия выводится определенный диапазон ключей/значений
-  TRAIN_MENU = {}.freeze
-
-  def m_trains_stations
-    puts '4. Add route'
-    puts '5. Add carriage'
-    puts '6. Remove carriage'
-    puts '7. Set current station'
-    puts '8. Next station'
-    puts '9. Prev station'
-    puts '10. Show trains on station'
-    puts '11. Show all carriage'
-    puts '12. Employ/release carriage space'
-  end
 
   def m_trains_wagons; end
 
   def m_trains
-    puts "\n"
-    puts 'Trains (choose menu number)'
-    puts '1. Add'
-    puts '2. Remove'
-    puts '3. Show all'
-    puts '4. Add route'
-    puts '5. Add carriage'
-    puts '6. Remove carriage'
-    puts '7. Set current station'
-    puts '8. Next station'
-    puts '9. Prev station'
-    puts '10. Show trains on station'
-    puts '11. Show all carriage'
-    puts '12. Employ/release carriage space'
-    puts 'Enter exit to escape'
-    @choice = gets.chomp
+    puts "\nTrains (choose menu number)\n1. Add\n2. Remove\n3. Show all"
+    puts "4. Add route\n5. Add carriage\n6. Remove carriage"
+    puts "7. Set current station\n8. Next station\n9. Prev station"
+    puts "10. Show trains on station\n11. Show all carriage"
+    puts "12. Employ/release carriage space\nEnter exit to escape"
   end
 
-  def m_add_train_type
-    puts 'Cargo (enter 1), passenger (enter 2)'
-    train_type = gets.chomp
-    trains[train] = case train_type
-                    when '1' then CargoTrain.new(train)
-                    when '2' then PassengerTrain.new(train)
-                    else puts 'Untyped'
-                    end
+  def m_add_train_type(train)
+    if @trains.key?(train)
+      puts 'Train exist'
+    else
+      puts 'Cargo (enter 1), passenger (enter 2)'
+      train_type = { '1' => proc { CargoTrain.new(train) }, '2' => proc { PassengerTrain.new(train) } }
+      @trains[train] = train_type[gets.chomp].call
+    end
   end
 
   def m_add_train
     begin
-      puts '1Enter train name'
+      puts 'Enter train name'
       train = gets.chomp
       Train.new(train)
     rescue => e
       puts e.inspect
       retry
     end
-    if @trains.key?(train)
-      puts 'Train exist'
-    else
-      m_add_train_type
-    end
-    # @trains.key?(train) ? (p 'Train exist') : m_add_train_type
+    m_add_train_type(train)
   end
 
   def m_remove_train
@@ -290,9 +210,23 @@ class Menu
     route = gets.chomp
     if @trains.key?(train) && @routes.key?(route)
       @trains[train].add_route(@routes[route])
-    else
-      puts 'Wrong train or route!'
     end
+  end
+
+  # явно нужно разделить поезда/вагоны/станции/маршруты по отдельным классам
+  # трабл с exit
+  def choose_w_type(train, carriage)
+    puts 'Enter count'
+    count = gets.chomp.to_i
+    choose_w_type2(train, carriage, count) if @trains[train]
+  end
+
+  def choose_w_type2(train, carriage, count)
+    wagon_types =
+      { 'PassengerTrain' => proc { PassengerCarriage.new(carriage, count) },
+        'CargoTrain' => proc { CargoCarriage.new(carriage, count) } }
+    @carriages[carriage] = wagon_types[@trains[train].class.to_s].call
+    @trains[train].add_carriage(@carriages[carriage])
   end
 
   def m_add_wagon
@@ -306,27 +240,13 @@ class Menu
       puts e.inspect
       retry
     end
-    if @trains[train] && @trains[train].is_a?(PassengerTrain)
-      puts 'Enter seats count'
-      seats_count = gets.chomp.to_i
-      @carriages[carriage] = PassengerCarriage.new(carriage, seats_count)
-      @trains[train].add_carriage(@carriages[carriage])
-    elsif @trains[train] && @trains[train].is_a?(CargoTrain)
-      puts 'Enter volume'
-      carriage_volume = gets.chomp.to_i
-      @carriages[carriage] = CargoCarriage.new(carriage, carriage_volume)
-      @trains[train].add_carriage(@carriages[carriage])
-    else
-      puts 'Wrong train!'
-    end
+    choose_w_type(train, carriage)
   end
 
   def m_check_train_key(train)
     puts 'Wrong train!' if @trains.key?(train)
   end
 
-  # вынести @trains.key?(train) puts "Train not exist"
-  # CONST
   def m_remove_wagon
     puts 'Enter train name'
     train = gets.chomp
@@ -391,7 +311,6 @@ class Menu
   def m_carriages_list
     puts 'Enter train name'
     train = gets.chomp
-
     @trains[train].each_carriage do |wagon|
       case wagon.class.to_s
       when 'PassengerCarriage' then m_passenger_free_engaged(wagon)
@@ -402,21 +321,33 @@ class Menu
     end
   end
 
-  def m_wagon_type; end
-
   def m_wagon_volume(train, carriage)
-    puts 'Employ. Enter 1/Release. Enter 2'
-    choice = gets.chomp.to_i
+    puts '1.Employ/2.Release'
+    choose = gets.chomp.to_s
     puts 'Enter count'
     volume = gets.chomp.to_i
-    case @trains[train].class.to_s
-    when 'PassengerTrain'
-      @trains[train].carriages[carriage].occupie_seat
-    when 'CargoTrain'
-      @trains[train].carriages[carriage].occupie_volume(volume)
-    else
-      puts 'Untyped carriage'
-    end
+    employ_choice = {
+      '1' => proc { wagon_employ(train, carriage, volume) },
+      '2' => proc { wagon_release(train, carriage, volume) }
+    }
+    employ_choice[choose].call
+  end
+
+  def local_occupie_volume
+  end
+# или разделить на методы по классам
+  def wagon_employ(train, carriage, volume)
+    wagon_employ =
+      { 'PassengerTrain' => proc { @trains[train].carriages[carriage].occupie_seat },
+        'CargoTrain' => proc { @trains[train].carriages[carriage].occupie_volume(volume) } }
+    wagon_employ[@trains[train].class.to_s].call
+  end
+
+  def wagon_release(train, carriage, volume)
+    wagon_release =
+      { 'PassengerTrain' => proc { @trains[train].carriages[carriage].release_seat },
+        'CargoTrain' => proc { @trains[train].carriages[carriage].release_volume(volume) } }
+    wagon_release[@trains[train].class.to_s].call
   end
 
   def check_carriage_name
@@ -429,91 +360,32 @@ class Menu
   end
 
   def m_wagon_space
-    # begin
-    puts 'Enter train name'
-    train = gets.chomp
-    check_carriage_name
-    #   puts 'Enter carriage name'
-    #   carriage = gets.chomp
-    #   Carriage.new(carriage)
-    # rescue => e
-    #   puts e.inspect
-    #   retry
-    # end
+    begin
+      puts 'Enter train name'
+      train = gets.chomp
+      puts 'Enter carriage name'
+      carriage = gets.chomp
+      Carriage.new(carriage)
+    rescue => e
+      puts e.inspect
+      retry
+    end
     m_wagon_volume(train, carriage)
-    # puts 'Employ. Enter 1/Release. Enter 2'
-    # choice = gets.chomp.to_i
-
-    # puts 'Enter count'
-    # volume = gets.chomp.to_i
-
-    # # tmp_types = {@trains[train] => @trains[train].class}
-    # # case tmp_types
-    # # when tmp_types.value = PassengerTrain then
-    # # вынести в отдельный модель проверку на класс поезда с передачей параметра == объекта поезд
-    # #    if @trains[train]
-    # case @trains[train].class.to_s
-    # when 'PassengerTrain'
-    #   @trains[train].carriages[carriage].occupie_seat
-    # when 'CargoTrain'
-    #   @trains[train].carriages[carriage].occupie_volume(volume)
-    # else
-    #   puts 'Untyped carriage'
-    # end
-    #   else
-    #     puts 'No such train'
-    #    end
-
-    # case choice
-    # when 1
-    #   if @trains[train] && @trains[train].is_a?(PassengerTrain)
-    #     @trains[train].carriages[carriage].occupie_seat
-    #   elsif @trains[train] && @trains[train].is_a?(CargoTrain)
-    #     puts 'Enter count'
-    #     volume = gets.chomp.to_i
-    #     @trains[train].carriages[carriage].occupie_volume(volume)
-    #   else
-    #     puts 'Untyped carriage'
-    #   end
-    # when 2
-    #   if @trains[train] && @trains[train].is_a?(PassengerTrain)
-    #     @trains[train].carriages[carriage].release_seat
-    #   elsif @trains[train] && @trains[train].is_a?(CargoTrain)
-    #     puts 'Enter count'
-    #     volume = gets.chomp.to_i
-    #     @trains[train].carriages[carriage].release_volume(volume)
-    #   else
-    #     puts 'Untyped carriage'
-    #   end
-    # else
-    #   puts 'Wrong choice!'
-    # end
   end
 
   # вынести метод меню с передачей значение == методу (разбить по подпунктам)
   def trains_menu
     loop do
       m_trains
-      choices = {
-        # '1' => proc { m_add_train }, '2' => proc { m_remove_train },
-        # '3' => proc { m_trains_list }, '4' => proc { m_train_add_route },
-        # '5' => proc { m_add_wagon }, '6' => proc { m_remove_wagon },
-        # '7' => proc { m_current_station }, '8' => proc { m_next_station },
-        # '9' => proc { m_prev_station }, '10' => proc { m_trains_on_station },
-        # '11' => proc { m_carriages_list }, '12' => proc { m_wagon_space }
-        '1' => m_add_train, '2' => m_remove_train, '3' => m_trains_list,
-        '4' => m_train_add_route, '5' => m_add_wagon, '6' => m_remove_wagon,
-        '7' => m_current_station, '8' => m_next_station,
-        '9' => m_prev_station, '10' => m_trains_on_station,
-        '11' => m_carriages_list, '12' => m_wagon_space
-      }
-      break if @choice == 'exit'
-      choices[@choice].call unless choices[@choice].nil?
-      # if choices[@choice].nil?
-      #   puts 'Wrong choice!'
-      # else
-      #   choices[@choice].call
-      # end
+      t_choice =
+        { '1' => proc { m_add_train }, '2' => proc { m_remove_train },
+          '3' => proc { m_trains_list }, '4' => proc { m_train_add_route },
+          '5' => proc { m_add_wagon }, '6' => proc { m_remove_wagon },
+          '7' => proc { m_current_station }, '8' => proc { m_next_station },
+          '9' => proc { m_prev_station }, '10' => proc { m_trains_on_station },
+          '11' => proc { m_carriages_list }, '12' => proc { m_wagon_space },
+          'exit' => proc { main_menu } }
+      t_choice[gets.chomp].call
     end
   end
 end

@@ -15,7 +15,11 @@ class Train
     validate!
     @speed               = 0
     @carriages           = {}
-    @all_trains[number] = self
+    # @all_trains[number] = self
+  end
+
+  def self.add_train(train)
+    @all_trains[train.number] = train
   end
 
   def each_carriage
