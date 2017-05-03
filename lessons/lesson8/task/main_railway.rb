@@ -322,6 +322,7 @@ class Menu
   end
 
   def m_wagon_volume(train, carriage)
+  #def m_wagon_volume(enter_train, check_carriage_name)
     puts '1.Employ/2.Release'
     choose = gets.chomp.to_s
     puts 'Enter count'
@@ -337,10 +338,11 @@ class Menu
   end
 # или разделить на методы по классам
   def wagon_employ(train, carriage, volume)
+    #@trains[train].carriages[carriage].
     wagon_employ =
       { 'PassengerTrain' => proc { @trains[train].carriages[carriage].occupie_seat },
         'CargoTrain' => proc { @trains[train].carriages[carriage].occupie_volume(volume) } }
-    wagon_employ[@trains[train].class.to_s].call
+    wagon_employ[@trains[enter_train].class.to_s].call
   end
 
   def wagon_release(train, carriage, volume)
@@ -350,27 +352,38 @@ class Menu
     wagon_release[@trains[train].class.to_s].call
   end
 
-  def check_carriage_name
+  def enter_train
+    puts 'Enter train name'
+    gets.chomp
+  end
+
+  def enter_carriage
     puts 'Enter carriage name'
-    carriage = gets.chomp
-    Carriage.new(carriage)
+    gets.chomp
+  end
+
+  def check_carriage_name
+    Carriage.new(enter_carriage)
   rescue => e
     puts e.inspect
     retry
   end
 
   def m_wagon_space
-    begin
-      puts 'Enter train name'
-      train = gets.chomp
-      puts 'Enter carriage name'
-      carriage = gets.chomp
-      Carriage.new(carriage)
-    rescue => e
-      puts e.inspect
-      retry
-    end
-    m_wagon_volume(train, carriage)
+    #puts enter_train
+    #puts enter_carriage
+    #begin
+    #   Carriage.new(carriage)
+    # rescue => e
+    #   puts e.inspect
+    #   retry
+    # end
+    #check_carriage_name
+    train = enter_train
+    carriage = check_carriage_name
+    puts train
+    puts carriage
+    m_wagon_volume(train,carriage)
   end
 
   # вынести метод меню с передачей значение == методу (разбить по подпунктам)
@@ -389,6 +402,19 @@ class Menu
     end
   end
 end
+
+class MenuStations
+#  attr_accessor :station
+end
+
+class MenuRoutes
+
+end
+
+class MenuTrain
+  
+end
+
 
 railway = Menu.new
 
