@@ -20,12 +20,16 @@ class Menu
     @carriages = {}
   end
 
+  def mm_menutrain_new
+    MenuTrain.new
+  end
+
   def menu_intro
     puts "\nWelcome to railway station system! (choose menu number)"
     puts "1. Stations\n2. Routes\n3. Trains\nEnter exit to escape"
     @choice =
       { '1' => proc { stations_menu }, '2' => proc { routes_menu },
-        '3' => proc { menu_train = MenuTrain.new }, 'exit' => proc { puts 'Bye!' } }
+        '3' => proc { mm_menutrain_new }, 'exit' => proc { puts 'Bye!' } }
       # { '1' => proc { stations_menu }, '2' => proc { routes_menu },
       #   '3' => proc { trains_menu }, 'exit' => proc { puts 'Bye!' } }
   end
@@ -156,13 +160,15 @@ class Menu
   end
   # ??? questions
   # how create dynamic hash filling by case of range key/value 
-end # Menu
+#end # Menu
 
 class MenuTrain
   
   attr_accessor :train, :carriage
 
-    menu_train.trains_menu
+  def initialize
+  puts "initialize"
+  trains_menu
   end
 
   def m_trains
@@ -426,7 +432,7 @@ class MenuTrain
     end
   end
 end # TrainMenu
-
+end
 
 class MenuStations
   #  attr_accessor :station
@@ -434,6 +440,10 @@ end
 
 class MenuRoutes
 end
+
+#class MainMenu
+#end
+
 
 railway = Menu.new
 
