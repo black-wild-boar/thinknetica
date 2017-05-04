@@ -10,10 +10,13 @@ require_relative 'cargo_carriage'
 class Menu
   attr_accessor :stations, :routes, :trains, :carriages, :choice
 
+  @@trains    = {}
+
+
   def initialize
     @stations  = {}
     @routes    = {}
-    @trains    = {}
+    #@trains    = {}
     @carriages = {}
   end
 
@@ -22,7 +25,9 @@ class Menu
     puts "1. Stations\n2. Routes\n3. Trains\nEnter exit to escape"
     @choice =
       { '1' => proc { stations_menu }, '2' => proc { routes_menu },
-        '3' => proc { trains_menu }, 'exit' => proc { puts 'Bye!' } }
+        '3' => proc { menu_train = MenuTrain.new }, 'exit' => proc { puts 'Bye!' } }
+      # { '1' => proc { stations_menu }, '2' => proc { routes_menu },
+      #   '3' => proc { trains_menu }, 'exit' => proc { puts 'Bye!' } }
   end
 
   def main_menu
@@ -42,7 +47,7 @@ class Menu
 
   def m_add_station
     begin
-      puts 'Enter station name'
+      p 'Enter station name'
       station = gets.chomp
       station = Station.new(station)
     rescue => e
@@ -53,12 +58,12 @@ class Menu
   end
 
   def m_remove_station
-    puts 'Enter station name'
+    p 'Enter station name'
     station = gets.chomp
     if @stations.key?(station)
       @stations.delete(station)
     else
-      puts 'No station'
+      p 'No station'
     end
   end
 
@@ -67,7 +72,7 @@ class Menu
   end
 
   def m_add_train_to_station(station)
-    puts 'Enter station name'
+    p 'Enter station name'
     station = gets.chomp
     @stations[station].each_train do |train|
       puts "Train N #{train.number}, type: #{train.class},'/
@@ -77,7 +82,7 @@ class Menu
 
   def m_train_on_station
     if @stations[station].nil? || @stations[station].train.empty?
-      puts 'No train on station'
+      p 'No train on station'
     else
       m_add_train_to_station(station)
     end
@@ -89,32 +94,29 @@ class Menu
   end
 
   def m_routes
-    puts "\nRoutes (choose menu number)"
-    puts "1. Add\n2. Remove\n3. Show all\n4. Add station"
-    puts "5. Remove station\nEnter exit to escape"
+    puts "\nRoutes (choose menu number)\n1. Add\n2. Remove\n3. Show all"
+    puts "4. Add station\n5. Remove station\nEnter exit to escape"
     @choice =
       { '1' => proc { m_add_route }, '2' => proc { m_remove_route },
         '3' => proc { m_routes_list }, '4' => proc { m_route_add_station },
         '5' => proc { m_route_remove_station }, 'exit' => proc { main_menu } }
   end
 
-  def m_add_route_check; end
-
   def m_add_route
-    puts 'Enter route name'
+    p 'Enter route name'
     route = gets.chomp
-    puts 'Enter first station name'
+    p 'Enter first station name'
     first = gets.chomp
-    puts 'Enter last station name'
+    p 'Enter last station name'
     last = gets.chomp
     @routes[route] = Route.new(first, last) if @stations.key?(first && last)
   end
 
   def m_remove_route
-    puts 'Enter route name'
+    p 'Enter route name'
     route = gets.chomp
     if !@routes.key?(route)
-      puts 'Wrong route!'
+      p 'Wrong route!'
     else
       @routes.delete(route)
     end
@@ -125,26 +127,26 @@ class Menu
   end
 
   def m_route_add_station
-    puts 'Enter route name'
+    p 'Enter route name'
     route = gets.chomp
-    puts 'Enter station name'
+    p 'Enter station name'
     station = gets.chomp
     if @routes.key?(route) && @stations.key?(station)
       @routes[route].add_station(station)
     else
-      puts 'Wrong route or station'
+      p 'Wrong route or station'
     end
   end
 
   def m_route_remove_station
-    puts 'Enter route name'
+    p 'Enter route name'
     route = gets.chomp
-    puts 'Enter station name'
+    p 'Enter station name'
     station = gets.chomp
     if @routes.include?(route) && @routes[route].stations.include?(station)
       @routes[route].del_station(station)
     else
-      puts 'Wrong route or station'
+      p 'Wrong route or station'
     end
   end
 
@@ -152,11 +154,16 @@ class Menu
     m_routes
     @choice[gets.chomp].call
   end
-  # ??? как вариант
-  # динамический хэш наполнение по условию
-  # есть общий хэш, в зависимости от условия выводится определенный диапазон ключей/значений
+  # ??? questions
+  # how create dynamic hash filling by case of range key/value 
+end # Menu
 
-  def m_trains_wagons; end
+class MenuTrain
+  
+  attr_accessor :train, :carriage
+
+    menu_train.trains_menu
+  end
 
   def m_trains
     puts "\nTrains (choose menu number)\n1. Add\n2. Remove\n3. Show all"
@@ -167,18 +174,24 @@ class Menu
   end
 
   def m_add_train_type(train)
-    if @trains.key?(train)
-      puts 'Train exist'
+    self
+    puts @@trains
+    p '123'
+    if @@trains.key?(train)
+      p 'Train exist'
+      p '321'
     else
-      puts 'Cargo (enter 1), passenger (enter 2)'
-      train_type = { '1' => proc { CargoTrain.new(train) }, '2' => proc { PassengerTrain.new(train) } }
+      puts '1.Cargo/2.Passenger'
+      train_type =
+        { '1' => proc { CargoTrain.new(train) },
+          '2' => proc { PassengerTrain.new(train) } }
       @trains[train] = train_type[gets.chomp].call
     end
   end
 
   def m_add_train
     begin
-      puts 'Enter train name'
+      p 'Enter train name'
       train = gets.chomp
       Train.new(train)
     rescue => e
@@ -189,34 +202,34 @@ class Menu
   end
 
   def m_remove_train
-    puts 'Enter train name'
+    p 'Enter train name'
     train = gets.chomp
     if @trains.key?(train)
       @trains.delete(train)
     else
-      puts 'Wrong train!'
+      p 'Wrong train!'
     end
   end
 
   def m_trains_list
-    puts "List of trains #{@trains}"
+    p "List of trains #{@trains}"
   end
 
   def m_train_add_route
-    puts 'Enter train'
+    p 'Enter train'
     train = gets.chomp
-    puts "List of routes #{@routes}"
-    puts 'Enter route name'
+    p "List of routes #{@routes}"
+    p 'Enter route name'
     route = gets.chomp
     if @trains.key?(train) && @routes.key?(route)
       @trains[train].add_route(@routes[route])
     end
   end
 
-  # явно нужно разделить поезда/вагоны/станции/маршруты по отдельным классам
-  # трабл с exit
+  # to cut main class by separate train/station/wagon/route classes
+  # bug with exit
   def choose_w_type(train, carriage)
-    puts 'Enter count'
+    p 'Enter count'
     count = gets.chomp.to_i
     choose_w_type2(train, carriage, count) if @trains[train]
   end
@@ -231,9 +244,9 @@ class Menu
 
   def m_add_wagon
     begin
-      puts 'Enter train name'
+      p 'Enter train name'
       train = gets.chomp
-      puts 'Enter carriage name'
+      p 'Enter carriage name'
       carriage = gets.chomp
       Carriage.new(carriage)
     rescue => e
@@ -244,50 +257,50 @@ class Menu
   end
 
   def m_check_train_key(train)
-    puts 'Wrong train!' if @trains.key?(train)
+    p 'Wrong train!' if @trains.key?(train)
   end
 
   def m_remove_wagon
-    puts 'Enter train name'
+    p 'Enter train name'
     train = gets.chomp
-    puts 'Enter carriage name'
+    p 'Enter carriage name'
     carriage = gets.chomp
     if @trains.key?(train)
     elsif @trains[train].carriage_include?(@carriages[carriage])
       @trains[train].del_carriage(@carriages[carriage])
     else
-      puts 'Wrong train or carriage!'
+      p 'Wrong train or carriage!'
     end
   end
 
   def m_current_station
-    puts 'Enter train name'
+    p 'Enter train name'
     train = gets.chomp
-    puts 'Enter station name'
+    p 'Enter station name'
     station = gets.chomp
     if @trains.key?(train) && @stations.key?(station)
       @trains[train].go_current_station(station)
       @stations[station].add_train(@trains[train])
     else
-      puts 'Wrong train or station!'
+      p 'Wrong train or station!'
     end
   end
 
   def m_next_station
-    puts 'Enter train name'
+    p 'Enter train name'
     train = gets.chomp
     @trains[train].next_station
   end
 
   def m_prev_station
-    puts 'Enter train name'
+    p 'Enter train name'
     train = gets.chomp
     @trains[train].prev_station
   end
 
   def m_trains_on_station
     puts "List of trains #{@trains}"
-    puts 'Enter station name'
+    p 'Enter station name'
     station = gets.chomp
     @trains.select do |name, value|
       puts "#{name} : #{value}" if value.current_station_id == station
@@ -309,7 +322,7 @@ class Menu
   end
 
   def m_carriages_list
-    puts 'Enter train name'
+    p 'Enter train name'
     train = gets.chomp
     @trains[train].each_carriage do |wagon|
       case wagon.class.to_s
@@ -322,10 +335,10 @@ class Menu
   end
 
   def m_wagon_volume(train, carriage)
-  #def m_wagon_volume(enter_train, check_carriage_name)
-    puts '1.Employ/2.Release'
+    # def m_wagon_volume(enter_train, check_carriage_name)
+    p '1.Employ/2.Release'
     choose = gets.chomp.to_s
-    puts 'Enter count'
+    p 'Enter count'
     volume = gets.chomp.to_i
     employ_choice = {
       '1' => proc { wagon_employ(train, carriage, volume) },
@@ -334,15 +347,25 @@ class Menu
     employ_choice[choose].call
   end
 
-  def local_occupie_volume
-  end
-# или разделить на методы по классам
+  def local_occupie_volume; end
+
+  # or cut with methods
   def wagon_employ(train, carriage, volume)
-    #@trains[train].carriages[carriage].
+    # @trains[train].carriages[carriage].
     wagon_employ =
-      { 'PassengerTrain' => proc { @trains[train].carriages[carriage].occupie_seat },
-        'CargoTrain' => proc { @trains[train].carriages[carriage].occupie_volume(volume) } }
+#      { 'PassengerTrain' => proc { @trains[train].carriages[carriage].occupie_seat },
+#        'CargoTrain' => proc { @trains[train].carriages[carriage].occupie_volume(volume) } }
+      { 'PassengerTrain' => cargo_wagon_employ(train, carriage, volume),
+        'CargoTrain' => passenger_wagon_employ(train, carriage, volume) }
     wagon_employ[@trains[enter_train].class.to_s].call
+  end
+# not working
+  def cargo_wagon_employ(train, carriage, volume)
+    @trains[train].carriages[carriage].occupie_seat
+  end
+
+  def passenger_wagon_employ(train, carriage, volume)
+    @trains[train].carriages[carriage].occupie_volume(volume)
   end
 
   def wagon_release(train, carriage, volume)
@@ -353,12 +376,12 @@ class Menu
   end
 
   def enter_train
-    puts 'Enter train name'
+    p 'Enter train name'
     gets.chomp
   end
 
   def enter_carriage
-    puts 'Enter carriage name'
+    p 'Enter carriage name'
     gets.chomp
   end
 
@@ -370,24 +393,25 @@ class Menu
   end
 
   def m_wagon_space
-    #puts enter_train
-    #puts enter_carriage
-    #begin
+    # puts enter_train
+    # puts enter_carriage
+    # begin
     #   Carriage.new(carriage)
     # rescue => e
     #   puts e.inspect
     #   retry
     # end
-    #check_carriage_name
+    # check_carriage_name
     train = enter_train
     carriage = check_carriage_name
     puts train
     puts carriage
-    m_wagon_volume(train,carriage)
+    m_wagon_volume(train, carriage)
   end
 
-  # вынести метод меню с передачей значение == методу (разбить по подпунктам)
+  # cut method
   def trains_menu
+    p "trains_menu"
     loop do
       m_trains
       t_choice =
@@ -401,20 +425,15 @@ class Menu
       t_choice[gets.chomp].call
     end
   end
-end
+end # TrainMenu
+
 
 class MenuStations
-#  attr_accessor :station
+  #  attr_accessor :station
 end
 
 class MenuRoutes
-
 end
-
-class MenuTrain
-  
-end
-
 
 railway = Menu.new
 
