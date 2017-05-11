@@ -1,11 +1,10 @@
 
 class MenuTrain
   
-  attr_accessor :train, :carriage
+  #attr_accessor :train, :carriage
 
   def initialize
-  puts "initialize"
-  trains_menu
+    @trains = {}
   end
 
   def m_trains
@@ -17,14 +16,10 @@ class MenuTrain
   end
 
   def m_add_train_type(train)
-    self
-    puts @@trains
-    p '123'
-    if @@trains.key?(train)
+    if @trains.key?(train)
       p 'Train exist'
-      p '321'
     else
-      puts '1.Cargo/2.Passenger'
+      p '1.Cargo/2.Passenger'
       train_type =
         { '1' => proc { CargoTrain.new(train) },
           '2' => proc { PassengerTrain.new(train) } }
@@ -32,19 +27,20 @@ class MenuTrain
     end
   end
 
-  def m_add_train
+  def add#m_add_train
     begin
-      p 'Enter train name'
+      p '1Enter train name'
       train = gets.chomp
-      Train.new(train)
+      #Train.new(train)
+      m_add_train_type(train)
     rescue => e
       puts e.inspect
       retry
     end
-    m_add_train_type(train)
+    #m_add_train_type(train)
   end
 
-  def m_remove_train
+  def del#m_remove_train
     p 'Enter train name'
     train = gets.chomp
     if @trains.key?(train)
@@ -54,8 +50,8 @@ class MenuTrain
     end
   end
 
-  def m_trains_list
-    p "List of trains #{@trains}"
+  def list#m_trains_list
+    p @trains
   end
 
   def m_train_add_route
@@ -252,7 +248,4 @@ class MenuTrain
     m_wagon_volume(train, carriage)
   end
 
-end # TrainMenu
-
-
-#menu_train = MenuTrain.new
+end
