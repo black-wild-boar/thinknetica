@@ -1,33 +1,33 @@
 
 class MenuRoute
 
+  attr_accessor :route
+
   def initialize
-    @@routes = {}
+    #@@routes = {}
   end
 
   def add#m_add_route
     p 'Enter route name'
-    route = gets.chomp
+    name = gets.chomp
     p 'Enter first station name'
     first = gets.chomp
     p 'Enter last station name'
     last = gets.chomp
     #@@routes[route] = Route.new(first, last) if @@stations.key?(first && last)
-    @@routes[route] = Route.new(first, last) if @@stations.key?(first && last)
+    @route = Route.new(name, first, last)# if @@stations.key?(first && last)
+    p @route
+    #@@routes[route] = Route.new(first, last) if @@stations.key?(first && last)
   end
 
   def del#m_remove_route
     p 'Enter route name'
-    route = gets.chomp
-    if !@routes.key?(route)
-      p 'Wrong route!'
-    else
-      @routes.delete(route)
-    end
+    name = gets.chomp
+      @route.del(name)
   end
 
   def list#m_routes_list
-    p @routes
+    @route.list
   end
 
   def m_route_add_station

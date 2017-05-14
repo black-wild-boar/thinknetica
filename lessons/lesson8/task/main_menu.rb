@@ -14,11 +14,10 @@ require_relative 'menu_wagon'
 class MainMenu
 
   def initialize
-    @@stations  = {}
+    #@@stations  = {}
     @@routes    = {}
     @@carriages = {}
     @@trains    = {}
-    
     #@m_route = MenuRoute.new
     #@m_train = MenuTrain.new
   end
@@ -43,7 +42,6 @@ class MainMenu
 
   def stations
     @m_station = MenuStation.new
-    #@m_station = Station.new
     loop do
       puts "\nStations (choose menu number)"
       puts "1. Add\n2. Remove\n3. Show all"

@@ -1,9 +1,8 @@
 class MenuStation
 
   attr_accessor :station
-
+  
   def initialize
-    @stations  = {}
   end
 
   def add
@@ -15,24 +14,16 @@ class MenuStation
       puts e.inspect
       retry
     end
-    @station.add(self)
-    #@stations[@station.name] = @station
+    @station.add(@station)
   end
 
   def del#m_remove_station
     p 'Enter station name'
-    station = gets.chomp
-    # if @stations.key?(station)
-    #   @stations.delete(station)
-    if Station.exits?(station)
-      Station.del(station)
-    else
-      p 'No station'
-    end
+    name = gets.chomp
+    @station.del(name)
   end
-#use real class
+
   def list#m_staions_list
-    #p @stations
     @station.list
   end
 

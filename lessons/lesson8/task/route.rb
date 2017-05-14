@@ -1,8 +1,23 @@
 class Route
   attr_reader :stations
+  #attr_accessor :routes
+  @@routes = {}
 
-  def initialize(station_first, station_last)
-    @stations = [station_first, station_last]
+  def initialize(name, first, last)
+    @stations = [first, last]
+    @@routes[name] = @stations
+  end
+
+  def list
+    p @@routes
+  end
+
+  def del(route)
+    if @@routes.key?(route)
+      @@routes.delete(route)  
+    else
+      p 'Wrong route!'
+    end
   end
 
   def add_station(station)

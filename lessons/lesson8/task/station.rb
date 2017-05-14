@@ -3,17 +3,15 @@ require './modules/instance_counter.rb'
 class Station
   include InstanceCounter
 
-  attr_reader :name, :train, :stations
+  attr_reader :name, :train
 
   STATION_PATTERN = /^[a-zA-Z0-9]{2,}$/
 
-  #@@stations = {}
+  @@stations = {}
 
   def initialize(name)
     @name = name
     validate!
-  #  @@stations[name] = self
-    
     @train = {}
   end
 
@@ -41,12 +39,16 @@ class Station
   end
 #+
   def list
-    @stations ||= 0
-    p @stations
+    @@stations ||= 0
+    p @@stations
   end
 
   def add(station)
-    @stations[station.name] = station
+    @@stations ||= {}
+    p @@stations
+    @@stations[station.name] = station
+p station
+    p @@stations
   end
 
   def exist(station)
@@ -54,8 +56,8 @@ class Station
   end
 
   def del(station)#m_remove_station
-    if @stations.key?(station)
-      @stations.delete(station)
+    if @@stations.key?(station)
+      @@stations.delete(station)
     else
       p 'No station'
     end
