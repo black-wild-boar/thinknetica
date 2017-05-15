@@ -25,6 +25,12 @@ class MenuStation
     @station.list
   end
 
+  def train_on_station
+    p 'Enter train name'
+    train = gets.chomp
+    Station.train_on_station(train)
+  end
+
   def m_add_train_to_station(station)
     p 'Enter station name'
     station = gets.chomp

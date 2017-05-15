@@ -26,8 +26,6 @@ class Carriage
     true
   end
 
-  def self.exist?
-
   protected
 
   attr_writer :number

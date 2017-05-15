@@ -75,20 +75,47 @@ class Train
   end
 #+- 
   def set_station(station)
-    route = Route.find(self.route)
-    self.station_id = route.index(station) + 1 unless route.nil?
+    unless route.nil? # && route.include?(station)  
+      route_stations = Route.find(self.route)
+      self.station_id = route_stations.index(station) + 1
+      station_object = route_stations.fetch(self.station_id - 1)
+      p Station.find(station_object).inspect
+      Station.find(station_object).add_train(self)
+    end
   end
 #+
   def next_station
-    route = Route.find(self.route)
-      self.station_id += 1 unless route.count == self.station_id
-      p route.count
-      p self.station_id
+    route_stations = Route.find(self.route) unless route.nil?
+    unless route_stations.count == self.station_id
+      station_object = route_stations.fetch(station_id - 1)
+      Station.find(station_object).del_train(self)
+      self.station_id += 1 
+      station_object = route_stations.fetch(station_id - 1)
+      Station.find(station_object).add_train(self)
+    end
   end
 #+
   def prev_station
-    self.station_id -= 1 if self.station_id > 1
+    route_stations = Route.find(self.route) unless route.nil?
+    if self.station_id > 1
+      self.station_id -= 1
+      station_object = route_stations.fetch(station_id - 1)
+      Station.find(station_object).add_train(self)
+      station_object = route_stations.fetch(station_id)
+      Station.find(station_object).del_train(self)
+    end
   end
+#+
+  # def trains_on_station#(station)
+
+  #   @@trains.each do |key, value|
+  #     route_stations = Route.find(value.route)
+  #     if value.station_id == route_stations.index(self) + 1
+  #       puts "#{key}"
+  #     end 
+  #   end
+  # end
+
   # def go_current_station(station)
   #   if route.stations.include?(station)
   #     self.current_station_id = station

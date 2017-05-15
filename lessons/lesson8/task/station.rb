@@ -31,11 +31,18 @@ class Station
   end
 
   def add_train(train)
+    p @train.inspect
+    #p self
+    #p @@stations[self]
+    #@@stations[self].train[train.number] = train
     @train[train.number] = train
   end
 
-  def del_train(train_number)
-    @train.delete(train_number)
+  def del_train(train)
+    p @train.inspect
+    p train.inspect
+    #@@stations[self].delete(train)
+    @train.delete(train.number)
   end
 #+
   def list
@@ -63,5 +70,13 @@ class Station
     else
       p 'No station'
     end
+  end
+#+
+  def self.find(station) 
+    @@stations[station] unless @@stations[station].nil?
+  end
+#+
+  def trains_on_station
+    p @train.keys
   end
 end

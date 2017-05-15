@@ -1,61 +1,38 @@
-
 class MenuTrain
   
-  #attr_accessor :train, :carriage
-
   attr_accessor :train  
 
-  def initialize
-    #@trains = {}
-  end
-
-  def m_trains
-    puts "\nTrains (choose menu number)\n1. Add\n2. Remove\n3. Show all"
-    puts "4. Add route\n5. Add carriage\n6. Remove carriage"
-    puts "7. Set current station\n8. Next station\n9. Prev station"
-    puts "10. Show trains on station\n11. Show all carriage"
-    puts "12. Employ/release carriage space\nEnter exit to escape"
-  end
-
-  def train_type(train)#m_add_train_type(train)
-    # if @trains.key?(train)
-    #   p 'Train exist'
-    # else
+  def train_type(train)
       p '1.Cargo/2.Passenger'
       train_type =
         { '1' => proc { CargoTrain.new(train) },
           '2' => proc { PassengerTrain.new(train) } }
-      #@trains[train] = train_type[gets.chomp].call
       @train.add(train_type[gets.chomp].call)
-    # end
   end
 #+
-  def add#m_add_train
+  def add
     begin
       p 'Enter train name'
       train = gets.chomp
       @train = Train.new(train)
-      #m_add_train_type(train)
     rescue => e
       puts e.inspect
       retry
     end
     train_type(train)
-    #@train.add(@train)
-    #m_add_train_type(train)
   end
 #+
-  def del#m_remove_train
+  def del
     p 'Enter train name'
     train = gets.chomp
     @train.del(train)
   end
 #+
-  def list#m_trains_list
+  def list
     @train.list
   end
 #+
-  def add_route#m_train_add_route
+  def add_route
     p 'Enter train'
     train = gets.chomp
     p 'Enter route name'
@@ -106,6 +83,7 @@ class MenuTrain
     p 'Enter station name'
     station = gets.chomp
     Train.find(train).set_station(station)
+
   end
 #+
   def next_station
@@ -119,86 +97,18 @@ class MenuTrain
     train = gets.chomp
     Train.find(train).prev_station
   end
-
-  # to cut main class by separate train/station/wagon/route classes
-  # bug with exit
-  # def choose_w_type(train, carriage)
-  #   p 'Enter count'
-  #   count = gets.chomp.to_i
-  #   choose_w_type2(train, carriage, count) if @trains[train]
-  # end
-
-  # def choose_w_type2(train, carriage, count)
-  #   wagon_types =
-  #     { 'PassengerTrain' => proc { PassengerCarriage.new(carriage, count) },
-  #       'CargoTrain' => proc { CargoCarriage.new(carriage, count) } }
-  #   @carriages[carriage] = wagon_types[@trains[train].class.to_s].call
-  #   @trains[train].add_carriage(@carriages[carriage])
-  # end
-
-  # def m_add_wagon
-  #   begin
-  #     p 'Enter train name'
-  #     train = gets.chomp
-  #     p 'Enter carriage name'
-  #     carriage = gets.chomp
-  #     Carriage.new(carriage)
-  #   rescue => e
-  #     puts e.inspect
-  #     retry
-  #   end
-  #   choose_w_type(train, carriage)
-  # end
-
-  # def m_check_train_key(train)
-  #   p 'Wrong train!' if @trains.key?(train)
-  # end
-
-  # def m_remove_wagon
-  #   p 'Enter train name'
-  #   train = gets.chomp
-  #   p 'Enter carriage name'
-  #   carriage = gets.chomp
-  #   if @trains.key?(train)
-  #   elsif @trains[train].carriage_include?(@carriages[carriage])
-  #     @trains[train].del_carriage(@carriages[carriage])
-  #   else
-  #     p 'Wrong train or carriage!'
-  #   end
-  # end
-
-  def m_current_station
-    p 'Enter train name'
-    train = gets.chomp
+#+
+  def trains_on_station
     p 'Enter station name'
     station = gets.chomp
-    if @trains.key?(train) && @stations.key?(station)
-      @trains[train].go_current_station(station)
-      @stations[station].add_train(@trains[train])
-    else
-      p 'Wrong train or station!'
-    end
+    Station.find(station).trains_on_station
+    #Train.trains_on_station(station)
   end
-
-  def m_next_station
+#+
+  def wagons_list
     p 'Enter train name'
     train = gets.chomp
-    @trains[train].next_station
-  end
 
-  def m_prev_station
-    p 'Enter train name'
-    train = gets.chomp
-    @trains[train].prev_station
-  end
-
-  def m_trains_on_station
-    puts "List of trains #{@trains}"
-    p 'Enter station name'
-    station = gets.chomp
-    @trains.select do |name, value|
-      puts "#{name} : #{value}" if value.current_station_id == station
-    end
   end
 
   def m_cargo_free_engaged(wagon)
