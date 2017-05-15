@@ -1,17 +1,17 @@
 class Route
   attr_reader :stations
-  #attr_accessor :routes
+
   @@routes = {}
 
   def initialize(name, first, last)
     @stations = [first, last]
     @@routes[name] = @stations
   end
-
+#+
   def list
     p @@routes
   end
-
+#+
   def del(route)
     if @@routes.key?(route)
       @@routes.delete(route)  
@@ -19,20 +19,38 @@ class Route
       p 'Wrong route!'
     end
   end
-
-  def add_station(station)
-    if stations.include?(station)
-      puts 'Current station exist'
+#+
+  def self.exist?(route) true unless @@routes[route].nil? end
+    # if @@routes[route].nil?
+    #   p 'No such route'
+    #   false
+    # else
+    #   true 
+    # end
+  # end
+#+
+  def add_station(route, station)
+    if Route.exist?(route) && Station.exist?(station)
+      @@routes[route].insert(-2, station)
     else
-      stations.insert(-2, station)
+      p 'No such route/station!'
     end
   end
-
-  def del_station(station)
-    if !stations.include?(station)
-      puts 'No station on route'
+#+
+  def del_station(route, station)
+    if Route.exist?(route) && Station.exist?(station)
+      p @@routes[route].count
+      @@routes[route].delete(station) if @@routes[route].count > 2
     else
-      stations.delete(station)
+      p 'No such route/station!'
     end
   end
+#+
+  def self.find(route) @@routes[route] unless @@routes[route].nil? end
+    #p @@routes[route].nil?
+    #@@routes[route] if !@@routes.nil?(route)
+  #end
+  #def station_exist?(station) true if @@route
+
+  #end
 end

@@ -18,8 +18,9 @@ class MainMenu
     @@routes    = {}
     @@carriages = {}
     @@trains    = {}
-    #@m_route = MenuRoute.new
-    #@m_train = MenuTrain.new
+    @@m_station = MenuStation.new
+    @@m_route = MenuRoute.new
+    @@m_train = MenuTrain.new
   end
 
   def exit_menu(choice)
@@ -41,14 +42,14 @@ class MainMenu
   end
 
   def stations
-    @m_station = MenuStation.new
+    #@m_station = MenuStation.new
     loop do
       puts "\nStations (choose menu number)"
       puts "1. Add\n2. Remove\n3. Show all"
       puts "4. Show all train on station\nEnter exit to escape"
       choice =
-        { '1' => proc { @m_station.add }, '2' => proc { @m_station.del },
-          '3' => proc { @m_station.list }, '4' => proc { m_train_on_station }}#,
+        { '1' => proc { @@m_station.add }, '2' => proc { @@m_station.del },
+          '3' => proc { @@m_station.list }, '4' => proc { m_train_on_station }}#,
           #'exit' => proc { menu } }
       key = gets.chomp
       break if key == 'exit'
@@ -57,14 +58,15 @@ class MainMenu
   end
 
   def routes
-    @m_route = MenuRoute.new
+    #@m_route = MenuRoute.new
     loop do
       puts "\nRoutes (choose menu number)\n1. Add\n2. Remove\n3. Show all"
       puts "4. Add station\n5. Remove station\nEnter exit to escape"
       choice =
-        { '1' => proc { @m_route.add }, '2' => proc { @m_route.del },
-          '3' => proc { @m_route.list }, '4' => proc { m_route_add_station },
-          '5' => proc { m_route_remove_station }}#, 'exit' => proc { menu } }
+        { '1' => proc { @@m_route.add }, '2' => proc { @@m_route.del },
+          '3' => proc { @@m_route.list },
+          '4' => proc { @@m_route.add_station },
+          '5' => proc { @@m_route.del_station }}#, 'exit' => proc { menu } }
       key = gets.chomp
       break if key == 'exit'
       choice[key].call
@@ -80,15 +82,18 @@ class MainMenu
   end
 
   def trains
-    @m_train = MenuTrain.new
+    #@m_train = MenuTrain.new
     loop do
       menu_trains
       choice =
-        { '1' => proc { @m_train.add }, '2' => proc { @m_train.del },
-          '3' => proc { @m_train.list }, '4' => proc { m_train_add_route },
-          '5' => proc { m_add_wagon }, '6' => proc { m_remove_wagon },
-          '7' => proc { m_current_station }, '8' => proc { m_next_station },
-          '9' => proc { m_prev_station }, '10' => proc { m_trains_on_station },
+        { '1' => proc { @@m_train.add }, '2' => proc { @@m_train.del },
+          '3' => proc { @@m_train.list }, '4' => proc { @@m_train.add_route },
+          '5' => proc { @@m_train.add_wagon },
+          '6' => proc { @@m_train.del_wagon }, 
+          '7' => proc { @@m_train.set_station },
+          '8' => proc { @@m_train.next_station },
+          '9' => proc { @@m_train.prev_station },
+          '10' => proc { m_trains_on_station },
           '11' => proc { m_carriages_list }, '12' => proc { m_wagon_space }}#,
           #'exit' => proc { menu } }
 #      choice[gets.chomp].call

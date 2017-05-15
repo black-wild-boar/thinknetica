@@ -3,8 +3,10 @@ class MenuTrain
   
   #attr_accessor :train, :carriage
 
+  attr_accessor :train  
+
   def initialize
-    @trains = {}
+    #@trains = {}
   end
 
   def m_trains
@@ -15,102 +17,155 @@ class MenuTrain
     puts "12. Employ/release carriage space\nEnter exit to escape"
   end
 
-  def m_add_train_type(train)
-    if @trains.key?(train)
-      p 'Train exist'
-    else
+  def train_type(train)#m_add_train_type(train)
+    # if @trains.key?(train)
+    #   p 'Train exist'
+    # else
       p '1.Cargo/2.Passenger'
       train_type =
         { '1' => proc { CargoTrain.new(train) },
           '2' => proc { PassengerTrain.new(train) } }
-      @trains[train] = train_type[gets.chomp].call
-    end
+      #@trains[train] = train_type[gets.chomp].call
+      @train.add(train_type[gets.chomp].call)
+    # end
   end
-
+#+
   def add#m_add_train
     begin
-      p '1Enter train name'
+      p 'Enter train name'
       train = gets.chomp
-      #Train.new(train)
-      m_add_train_type(train)
+      @train = Train.new(train)
+      #m_add_train_type(train)
     rescue => e
       puts e.inspect
       retry
     end
+    train_type(train)
+    #@train.add(@train)
     #m_add_train_type(train)
   end
-
+#+
   def del#m_remove_train
     p 'Enter train name'
     train = gets.chomp
-    if @trains.key?(train)
-      @trains.delete(train)
-    else
-      p 'Wrong train!'
-    end
+    @train.del(train)
   end
-
+#+
   def list#m_trains_list
-    p @trains
+    @train.list
   end
-
-  def m_train_add_route
+#+
+  def add_route#m_train_add_route
     p 'Enter train'
     train = gets.chomp
-    p "List of routes #{@routes}"
     p 'Enter route name'
     route = gets.chomp
-    if @trains.key?(train) && @routes.key?(route)
-      @trains[train].add_route(@routes[route])
-    end
+    @train.add_route(train, route)
   end
-
-  # to cut main class by separate train/station/wagon/route classes
-  # bug with exit
-  def choose_w_type(train, carriage)
-    p 'Enter count'
-    count = gets.chomp.to_i
-    choose_w_type2(train, carriage, count) if @trains[train]
-  end
-
-  def choose_w_type2(train, carriage, count)
-    wagon_types =
-      { 'PassengerTrain' => proc { PassengerCarriage.new(carriage, count) },
-        'CargoTrain' => proc { CargoCarriage.new(carriage, count) } }
-    @carriages[carriage] = wagon_types[@trains[train].class.to_s].call
-    @trains[train].add_carriage(@carriages[carriage])
-  end
-
-  def m_add_wagon
+#+
+  def add_wagon
     begin
       p 'Enter train name'
       train = gets.chomp
       p 'Enter carriage name'
-      carriage = gets.chomp
-      Carriage.new(carriage)
+      wagon = gets.chomp
+      Carriage.new(wagon)
     rescue => e
       puts e.inspect
       retry
     end
-    choose_w_type(train, carriage)
+    wagon_type(Train.find(train), wagon)
   end
-
-  def m_check_train_key(train)
-    p 'Wrong train!' if @trains.key?(train)
+#+
+  def wagon_type(train, wagon)
+    p 'Enter count'
+    count = gets.chomp.to_i
+    wagon_types =
+     { 'PassengerTrain' => proc { PassengerCarriage.new(wagon, count) },
+       'CargoTrain' => proc { CargoCarriage.new(wagon, count) } }
+    train.add_wagon(wagon_types[train.class.to_s].call)
   end
-
-  def m_remove_wagon
+#+
+  def del_wagon
+    begin
+      p 'Enter train name'
+      train = gets.chomp
+      p 'Enter carriage name'
+      wagon = gets.chomp
+      Carriage.new(wagon)
+    rescue => e
+      puts e.inspect
+      retry
+    end
+    Train.find(train).del_wagon(wagon)
+  end
+#+
+  def set_station
     p 'Enter train name'
     train = gets.chomp
-    p 'Enter carriage name'
-    carriage = gets.chomp
-    if @trains.key?(train)
-    elsif @trains[train].carriage_include?(@carriages[carriage])
-      @trains[train].del_carriage(@carriages[carriage])
-    else
-      p 'Wrong train or carriage!'
-    end
+    p 'Enter station name'
+    station = gets.chomp
+    Train.find(train).set_station(station)
   end
+#+
+  def next_station
+    p 'Enter train name'
+    train = gets.chomp
+    Train.find(train).next_station
+  end
+#+
+  def prev_station
+    p 'Enter train name'
+    train = gets.chomp
+    Train.find(train).prev_station
+  end
+
+  # to cut main class by separate train/station/wagon/route classes
+  # bug with exit
+  # def choose_w_type(train, carriage)
+  #   p 'Enter count'
+  #   count = gets.chomp.to_i
+  #   choose_w_type2(train, carriage, count) if @trains[train]
+  # end
+
+  # def choose_w_type2(train, carriage, count)
+  #   wagon_types =
+  #     { 'PassengerTrain' => proc { PassengerCarriage.new(carriage, count) },
+  #       'CargoTrain' => proc { CargoCarriage.new(carriage, count) } }
+  #   @carriages[carriage] = wagon_types[@trains[train].class.to_s].call
+  #   @trains[train].add_carriage(@carriages[carriage])
+  # end
+
+  # def m_add_wagon
+  #   begin
+  #     p 'Enter train name'
+  #     train = gets.chomp
+  #     p 'Enter carriage name'
+  #     carriage = gets.chomp
+  #     Carriage.new(carriage)
+  #   rescue => e
+  #     puts e.inspect
+  #     retry
+  #   end
+  #   choose_w_type(train, carriage)
+  # end
+
+  # def m_check_train_key(train)
+  #   p 'Wrong train!' if @trains.key?(train)
+  # end
+
+  # def m_remove_wagon
+  #   p 'Enter train name'
+  #   train = gets.chomp
+  #   p 'Enter carriage name'
+  #   carriage = gets.chomp
+  #   if @trains.key?(train)
+  #   elsif @trains[train].carriage_include?(@carriages[carriage])
+  #     @trains[train].del_carriage(@carriages[carriage])
+  #   else
+  #     p 'Wrong train or carriage!'
+  #   end
+  # end
 
   def m_current_station
     p 'Enter train name'

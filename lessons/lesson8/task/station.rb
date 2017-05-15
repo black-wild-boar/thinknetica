@@ -18,13 +18,13 @@ class Station
   def each_train
     train.values.each { |train| yield(train) }
   end
-
+#+
   def valid?
     validate!
   rescue
     false
   end
-
+#+
   def validate!
     raise 'Wrong station name format' if @name !~ STATION_PATTERN
     true
@@ -42,19 +42,21 @@ class Station
     @@stations ||= 0
     p @@stations
   end
-
+#+
   def add(station)
     @@stations ||= {}
-    p @@stations
     @@stations[station.name] = station
-p station
-    p @@stations
   end
-
-  def exist(station)
-    true if @stations.key?(station)
-  end
-
+#+
+  def self.exist?(station) true unless @@stations[station].nil? end
+    # if @@stations[station].nil?
+    #   p 'No such station'
+    #   false
+    # else
+    #   true 
+    # end
+  #end
+#+
   def del(station)#m_remove_station
     if @@stations.key?(station)
       @@stations.delete(station)
@@ -62,5 +64,4 @@ p station
       p 'No station'
     end
   end
-
 end

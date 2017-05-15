@@ -1,10 +1,8 @@
+
 class MenuStation
 
   attr_accessor :station
-  
-  def initialize
-  end
-
+#+
   def add
     begin
       p 'Enter station name'
@@ -16,13 +14,13 @@ class MenuStation
     end
     @station.add(@station)
   end
-
+#+
   def del#m_remove_station
     p 'Enter station name'
     name = gets.chomp
     @station.del(name)
   end
-
+#+
   def list#m_staions_list
     @station.list
   end

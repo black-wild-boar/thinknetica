@@ -14,17 +14,19 @@ class Carriage
     validate!
     register_instance
   end
-
+#+
   def valid?
     validate!
   rescue
     false
   end
-
+#+
   def validate!
     raise 'Wrong train name format' if @number !~ CARRIAGE_PATTERN
     true
   end
+
+  def self.exist?
 
   protected
 
