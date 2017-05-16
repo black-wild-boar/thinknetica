@@ -7,7 +7,7 @@ class Station
 
   STATION_PATTERN = /^[a-zA-Z0-9]{2,}$/
 
-   @@stations = {}
+  @@stations = {}
 
   def initialize(name)
     @name = name
@@ -25,6 +25,14 @@ class Station
   def validate!
     raise 'Wrong station name format' if @name !~ STATION_PATTERN
     true
+  end
+
+  def add_train(train)
+    @train[train.number] = train
+  end
+
+  def del_train(train)
+    @train.delete(train.number)
   end
 
   def list

@@ -27,8 +27,7 @@ class MainMenu
     loop do
       menu_text
       choice =
-        { '1' => proc { stations }, '2' => proc { routes },
-          '3' => proc { trains } }
+        { '1' => -> { stations }, '2' => -> { routes }, '3' => -> { trains } }
       key = gets.chomp
       break if key == 'exit'
       choice[key].call if choice.key?(key)
@@ -45,9 +44,9 @@ class MainMenu
     loop do
       station_text
       choice =
-        { '1' => proc { @m_station.add }, '2' => proc { @m_station.del },
-          '3' => proc { @m_station.list },
-          '4' => proc { @m_station.trains_on_station } }
+        { '1' => -> { @m_station.add }, '2' => -> { @m_station.del },
+          '3' => -> { @m_station.list },
+          '4' => -> { @m_station.trains_on_station } }
       key = gets.chomp
       break if key == 'exit'
       choice[key].call if choice.key?(key)
@@ -63,10 +62,9 @@ class MainMenu
     loop do
       route_text
       choice =
-        { '1' => proc { @m_route.add }, '2' => proc { @m_route.del },
-          '3' => proc { @m_route.list },
-          '4' => proc { @m_route.add_station },
-          '5' => proc { @m_route.del_station } }
+        { '1' => -> { @m_route.add }, '2' => -> { @m_route.del },
+          '3' => -> { @m_route.list }, '4' => -> { @m_route.add_station },
+          '5' => -> { @m_route.del_station } }
       key = gets.chomp
       break if key == 'exit'
       choice[key].call if choice.key?(key)
@@ -85,15 +83,14 @@ class MainMenu
     loop do
       train_text
       choice =
-        { '1' => proc { @m_train.add }, '2' => proc { @m_train.del },
-          '3' => proc { @m_train.list }, '4' => proc { @m_train.add_route },
-          '5' => proc { @m_train.add_wagon },
-          '6' => proc { @m_train.del_wagon },
-          '7' => proc { @m_train.current_station },
-          '8' => proc { @m_train.next_station },
-          '9' => proc { @m_train.prev_station },
-          '10' => proc { @m_train.wagons_list },
-          '11' => proc { @m_train.wagon_space } }
+        { '1' => -> { @m_train.add }, '2' => -> { @m_train.del },
+          '3' => -> { @m_train.list }, '4' => -> { @m_train.add_route },
+          '5' => -> { @m_train.add_wagon }, '6' => -> { @m_train.del_wagon },
+          '7' => -> { @m_train.current_station },
+          '8' => -> { @m_train.next_station },
+          '9' => -> { @m_train.prev_station },
+          '10' => -> { @m_train.wagons_list },
+          '11' => -> { @m_train.wagon_space } }
       key = gets.chomp
       break if key == 'exit'
       choice[key].call if choice.key?(key)

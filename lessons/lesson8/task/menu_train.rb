@@ -40,9 +40,9 @@ class MenuTrain
   end
 
   def add_wagon
+    p 'Enter train name'
+    train = gets.chomp
     begin
-      p 'Enter train name'
-      train = gets.chomp
       p 'Enter carriage name'
       wagon = gets.chomp
       Carriage.new(wagon)
@@ -63,9 +63,9 @@ class MenuTrain
   end
 
   def del_wagon
+    p 'Enter train name'
+    train = gets.chomp
     begin
-      p 'Enter train name'
-      train = gets.chomp
       p 'Enter wagon name'
       wagon = gets.chomp
       Carriage.new(wagon)
@@ -140,14 +140,14 @@ class MenuTrain
     wagon_release[train_obj.class.to_s].call
   end
 
-  # def m_cargo_free_engaged(wagon)
+  # def cargo_free_engaged(wagon)
   #   p "Carriage N #{wagon.number}, "\
   #     "type: #{wagon.class}, " \
   #     "free space: #{wagon.free_volume}, "\
   #     "engaged volume: #{wagon.engaged_volume}"
   # end
 
-  # def m_passenger_free_engaged(wagon)
+  # def passenger_free_engaged(wagon)
   #   p "Carriage N #{wagon.number}, "\
   #     "type: #{wagon.class}, "\
   #     "free seats: #{wagon.seats_free}, "\

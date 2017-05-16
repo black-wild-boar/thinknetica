@@ -22,7 +22,7 @@ class Carriage
   end
 
   def validate!
-    raise 'Wrong train name format' if @number !~ CARRIAGE_PATTERN
+    raise 'Wrong wagon name format' if @number !~ CARRIAGE_PATTERN
     true
   end
 
