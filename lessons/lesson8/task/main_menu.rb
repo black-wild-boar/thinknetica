@@ -38,7 +38,7 @@ class MainMenu
   def station_text
     puts "\nStations (choose menu number)"
     puts "1. Add\n2. Remove\n3. Show all"
-    puts "4. Show all train on station\nEnter exit to escape"
+    puts "4. Show all trains on station\nEnter exit to escape"
   end
 
   def stations
@@ -47,7 +47,7 @@ class MainMenu
       choice =
         { '1' => proc { @m_station.add }, '2' => proc { @m_station.del },
           '3' => proc { @m_station.list },
-          '4' => proc { @m_station.train_on_station } }
+          '4' => proc { @m_station.trains_on_station } }
       key = gets.chomp
       break if key == 'exit'
       choice[key].call if choice.key?(key)
@@ -77,8 +77,8 @@ class MainMenu
     puts "\nTrains (choose menu number)\n1. Add\n2. Remove\n3. Show all"
     puts "4. Add route\n5. Add carriage\n6. Remove carriage"
     puts "7. Set current station\n8. Next station\n9. Prev station"
-    puts "10. Show trains on station\n11. Show all carriage"
-    puts "12. Employ/release carriage space\nEnter exit to escape"
+    puts "10. Show all carriage\n11. Employ/release carriage space"
+    puts 'Enter exit to escape'
   end
 
   def trains
@@ -89,22 +89,15 @@ class MainMenu
           '3' => proc { @m_train.list }, '4' => proc { @m_train.add_route },
           '5' => proc { @m_train.add_wagon },
           '6' => proc { @m_train.del_wagon },
-          '7' => proc { @m_train.set_station },
+          '7' => proc { @m_train.current_station },
           '8' => proc { @m_train.next_station },
           '9' => proc { @m_train.prev_station },
-          '10' => proc { @m_train.trains_on_station },
-          '11' => proc { m_carriages_list },
-          '12' => proc { m_wagon_space } }
+          '10' => proc { @m_train.wagons_list },
+          '11' => proc { @m_train.wagon_space } }
       key = gets.chomp
       break if key == 'exit'
       choice[key].call if choice.key?(key)
     end
-  end
-
-  def wagon_text
-  end
-
-  def wagons
   end
 end
 
