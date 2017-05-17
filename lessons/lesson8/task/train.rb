@@ -75,49 +75,40 @@ class Train
   end
 
   def current_station(station)
-    unless route.nil?
-      route_stations = Route.find(route)
-      self.station_id = route_stations.index(station) + 1
-      station_object = route_stations.fetch(station_id - 1)
-      Station.find(station_object).add_train(self)
-    end
+    route_stations = Route.find(route)
+    self.station_id = route_stations.index(station) + 1
+    station_object = route_stations.fetch(station_id - 1)
+    Station.find(station_object).add_train(self)
+    return unless route.nil?
   end
 
   def next_station
     route_stations = Route.find(route)
-    unless route_stations.count == station_id
-      add_station(route_stations)
-      del_station(route_stations)
-      self.station_id += 1
-    end
+    add_station(route_stations)
+    del_station(route_stations)
+    self.station_id += 1
+    return unless route_stations.count == station_id
   end
 
   def del_station(route_stations)
-    unless route.nil?
-      station_name = route_stations.fetch(station_id - 1)
-      p 'del'
-      p station_name
-      Station.find(station_name).del_train(self)
-    end
+    station_name = route_stations.fetch(station_id - 1)
+    Station.find(station_name).del_train(self)
+    return unless route.nil?
   end
 
   def add_station(route_stations)
     puts "route.nil? #{route.nil?}"
-    unless route.nil?
-      station_name = route_stations.fetch(station_id)
-      p 'add'
-      p station_name
-      Station.find(station_name).add_train(self)
-    end
+    station_name = route_stations.fetch(station_id)
+    Station.find(station_name).add_train(self)
+    return unless route.nil?
   end
 
   def prev_station
     route_stations = Route.find(route)
-    if self.station_id > 1
-      self.station_id -= 1
-      add_station(route_stations)
-      del_station(route_stations)
-    end
+    self.station_id -= 1
+    add_station(route_stations)
+    del_station(route_stations)
+    return if self.station_id > 1
   end
 
   def wagons_list

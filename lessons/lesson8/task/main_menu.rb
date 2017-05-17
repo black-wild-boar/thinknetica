@@ -9,7 +9,6 @@ require_relative 'cargo_carriage'
 require_relative 'menu_route'
 require_relative 'menu_station'
 require_relative 'menu_train'
-require_relative 'menu_wagon'
 
 class MainMenu
   def initialize

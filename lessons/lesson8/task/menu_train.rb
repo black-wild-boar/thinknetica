@@ -28,7 +28,7 @@ class MenuTrain
   end
 
   def list
-    @train.list
+    @train.list unless @train.nil?
   end
 
   def add_route
