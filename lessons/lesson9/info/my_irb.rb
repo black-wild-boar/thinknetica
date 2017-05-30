@@ -1,15 +1,16 @@
 line_num = 0
-input = ""
+code = ''
 
 loop do
   print "#{line_num += 1}?: "
   line = gets
-  break if line.strip == 'exit' 
+  break if line.strip == 'exit'
 
-  if line.strip == "" 
-    puts 'Evaluating...'
-    puts eval(input)
+  if line.strip == ''
+    p 'Evaluationg...'
+    p eval(code)
+    code = ''
   else
-    input += line
+    code += line
   end
 end

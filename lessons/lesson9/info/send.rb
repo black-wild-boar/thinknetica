@@ -1,5 +1,5 @@
-p 'Enter string'
+p 'enter string'
 str = gets.chomp
-p 'Enter method'
+p 'enter method name'
 method = gets.chomp.to_sym
-puts str.send(method)
+p str.send(method)
