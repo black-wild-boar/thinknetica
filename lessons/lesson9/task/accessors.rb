@@ -18,14 +18,13 @@ module Accessors
         end
       end
     end
-  end
-
-  module InstanceMethods
 
     def strong_attr_accessor(name, class_name)
       var_name = "@#{name}".to_sym
-      self.class.send(:define_method, name, ->() { instance_variable_get(var_name) } )
-      self.class.send(:define_method, "#{name}=".to_sym, ->(value) do 
+      # self.class.send(:define_method, name, ->() { instance_variable_get(var_name) } )
+      # self.class.send(:define_method, "#{name}=".to_sym, ->(value) do 
+      define_method(name.to_s.to_sym) { instance_variable_get(var_name) }
+      define_method("#{name}=".to_sym) do | value | 
         class_name = class_name.to_s.strip.capitalize
         if value.class.to_s != class_name
           raise ArgumentError, "Wrong value type. It must be #{class_name}" 
@@ -33,8 +32,13 @@ module Accessors
           instance_variable_set(var_name, value)
         end
       end
-      ) # как поправить такой синтаксис? или это нормально?
+       # как поправить такой синтаксис? или это нормально?
     end
+
+  end
+
+  module InstanceMethods
+
   end
 end
 
@@ -42,8 +46,9 @@ class Test
   include Accessors
 
   private
-  def method_missing(name)
-    self.class.attr_accessor_with_history(name)
-  end
+  # def method_missing(name)
+  #   self.class.attr_accessor_with_history(name)
+  # end
+  attr_accessor_with_history :name
 end
 
