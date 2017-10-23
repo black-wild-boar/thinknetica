@@ -5,114 +5,82 @@ module Validation
     #           format: ->(name, format) { format(name, format) },
     #           type: ->(name, type) { type(name ,type)} }
 
-    CHECKS = { presence: proc {|name| validate_presence(name) },
-              format: proc { |name, format| validate_format(name, format) },
-              type: proc { |name, type| validate_type(name ,type)}
-            }
+    # CHECKS = { presence: proc {|name| validate_presence(name) },
+            #   format: proc { |name, format| validate_format(name, format) },
+            #   type: proc { |name, type| validate_type(name ,type)}
+            # }
 
-    def validate_new(check_attr, check_type, attrs)
-      p 'class method validate_new'
+    def validate(check_attr, check_type, *attrs)
+      p 'class method validate'
       
-      p "check_attr #{check_attr}"
-      p "check_type #{check_type}"
+      # var_name = "@@checks".to_sym
+      # value  = { presence: proc {|check_attr| validate_presence(check_attr) },
+      #           format: proc { |check_attr, attrs| validate_format(check_attr, attrs) },
+      #           type: proc { |check_attr, attrs| validate_type(check_attr ,attrs)}
+      #         }
+      #   class_variable_set(var_name, value)
 
+      # p "class_variables #{class_variables}"
 
-      CHECKS[check_type].call(check_attr)
-
-      # p self
-      # p instance_variables
-      # @@checks[attrs[:validate_type]].call
-      # obj, name, check_type, *attrs)    
-    end
-
-    def validate(obj, name, check_type, *attrs)
-      # где правильнее вычислять значение: в публичном или приватном методе?
-      # с точки зрения сокрытия деталей реализации - в приватном, но тогда приходится постоянно переносить объект как параметр метода
-      name = obj.instance_variable_get("@#{name}".to_sym)
-      if attrs.empty?
-        # CHECKS[check_type].call(name)
-        validate_presence(name) if check_type == :validate_presence
-      else
-        attrs.each do | attr |
-          format(name, attr) if check_type == :format
-          type(name, attr) if check_type == :type
-          # attrs.each(&:CHECKS[check_type].call(name, attr))        
-        end
-      end
-
-      rescue
-      p "Checking complite! You have some errors! #{false}"
-
-    end
-
-
-    def valid?(obj, name, check_type, *attrs)
-      validate(obj, name, check_type, *attrs)
-    rescue
-      p 'Validate error'
-      p false
-    end
-
- # private 
-
-    def validate_presence(name)
-      p 'Check validate_presence...'
-      p name
-      # почему не работает вариант с тернарными операторами?
-      # valid? ? !(value.nil? || value == '') : !valid?
+      var_name = "@@#{check_type}".to_sym
+      value = {name: check_attr, attrs: attrs}
       
-      raise if name.nil? || name == ''
-      p 'No validate_presence error'
-      rescue
-      p "validate_presence validation error! #{false}"
+      # p "class_variable_set"
+      class_variable_set(var_name, value)
 
-      # p valid?
-      # true
-      
-      # if !(name.nil? || name == '')
-      #   valid?
-      # else
-      #   !valid?
-      # end
-      
-    end
-
-    def validate_format(name, format)# = /^[A-Z]{0,3}$/)
-      p 'Check validate_format...'
-      format = Regexp.new "#{format}"
-      
-      raise 'Format validation error!' if name !~ format
-      p 'No format error'
-      rescue
-      p "Format validation error! #{false}"
-    end
-
-    def validate_type(name ,type)
-      p 'Check validate_type'
-      raise 'Type validateion error' if name.class.to_s != type.to_s.capitalize
-      p 'No type error'
-      rescue
-      p "Type validation error! #{false}"
+      # p "class_variables #{class_variables}"
+      # p class_variable_get(var_name)
     end
   end
 
   module InstanceMethods
     def validate!(check_attr, check_type, *attrs)
-      # self.class.valid?(obj = self, name, check_type, *attrs)
       p 'instance method validate!'
-      p "check_attr #{check_attr}"
-      p "check_attr value #{instance_variable_get("@#{check_attr}".to_sym)}"
+  
+      # self.class.send(:validate, check_attr, check_type, *attrs)
+      # self.class.send(:validate, class_variable_get(:@@checks)[check_type].call)
 
-      p "check_type #{check_type}"
       check_attr = instance_variable_get("@#{check_attr}".to_sym)
-p "check_attr #{check_attr}"
-
-      self.class.send(:validate_new, check_attr, check_type, attrs)
+      #сохраняем правила валидации
+      self.class.send(:validate, check_attr, check_type, attrs)
+  
+      if attrs.empty?
+        self.send("validate_#{check_type}".to_sym, check_attr)
+      else
+        self.send("validate_#{check_type}".to_sym, check_attr, attrs)
+      end
     end
 
-      def validate_presence(name)
+  private
+
+    def validate_presence(name)
       p 'Check validate_presence...'
+      raise if name.nil? || name == ''
+        p "No validate_presence error #{valid?}"
+      rescue
+        p "Validate_presence validation error! #{!valid?}"
+    end
+
+    def validate_format(name, format)
+      p 'Check validate_format...'
       p name
-      end
+      format = Regexp.new "#{format}"
+    raise 'Format validation error!' if name !~ format
+      p "No format error #{valid?}"
+    rescue
+      p "Format validation error! #{!valid?}"
+    end
+
+    def validate_type(name ,type)
+      p 'Check validate_type'
+    raise 'Type validation error' if !name.is_a?type[0]
+      p "No type error #{valid?}"
+    rescue
+      p "Type validation error! #{!valid?}"
+    end
+
+    def valid?
+      return true
+    end
   end
 end
