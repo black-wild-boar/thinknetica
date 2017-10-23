@@ -1,15 +1,6 @@
 module Validation
   module ClassMethods
 
-    # CHECKS = { validate_presence: ->(name) { validate_presence(name) },
-    #           format: ->(name, format) { format(name, format) },
-    #           type: ->(name, type) { type(name ,type)} }
-
-    # CHECKS = { presence: proc {|name| validate_presence(name) },
-            #   format: proc { |name, format| validate_format(name, format) },
-            #   type: proc { |name, type| validate_type(name ,type)}
-            # }
-
     def validate(check_attr, check_type, *attrs)
       p 'class method validate'
       
@@ -19,17 +10,10 @@ module Validation
       #           type: proc { |check_attr, attrs| validate_type(check_attr ,attrs)}
       #         }
       #   class_variable_set(var_name, value)
-
-      # p "class_variables #{class_variables}"
-
       var_name = "@@#{check_type}".to_sym
       value = {name: check_attr, attrs: attrs}
       
-      # p "class_variable_set"
       class_variable_set(var_name, value)
-
-      # p "class_variables #{class_variables}"
-      # p class_variable_get(var_name)
     end
   end
 
