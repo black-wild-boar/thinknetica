@@ -8,37 +8,33 @@ module Accessors
   module ClassMethods
 
     def attr_accessor_with_history(*names)
-      calculate = []
       names.each do | name |
         var_name = "@#{name}".to_sym
         define_method(name) { instance_variable_get(var_name) }
         define_method("#{name}=".to_sym) do | value |
-          instance_variable_set(var_name, value) 
-          instance_variable_set("@#{name}_history".to_sym, calculate << value)
+          value_prev = [] << instance_variable_get(var_name)
+          instance_variable_set("@#{name}_history".to_sym, value_prev << value)
+          instance_variable_set(var_name, value)
         end
       end
     end
 
     def strong_attr_accessor(name, class_name)
       var_name = "@#{name}".to_sym
-      # self.class.send(:define_method, name, ->() { instance_variable_get(var_name) } )
-      # self.class.send(:define_method, "#{name}=".to_sym, ->(value) do 
       define_method(name.to_s.to_sym) { instance_variable_get(var_name) }
       define_method("#{name}=".to_sym) do | value | 
-        class_name = class_name.to_s.strip.capitalize
-        if value.class.to_s != class_name
-          raise ArgumentError, "Wrong value type. It must be #{class_name}" 
-        else
-          instance_variable_set(var_name, value)
-        end
+        raise "Wrong value type. It must be #{class_name}" if !value.is_a?class_name
+        instance_variable_set(var_name, value)
       end
-       # как поправить такой синтаксис? или это нормально?
     end
-
   end
 
   module InstanceMethods
-
+    def attr_accessor_history(name)
+      var_name = "@#{name}".to_sym
+      values = instance_variable_get(var_name)
+      p values
+    end
   end
 end
 
@@ -46,9 +42,31 @@ class Test
   include Accessors
 
   private
-  # def method_missing(name)
-  #   self.class.attr_accessor_with_history(name)
-  # end
-  attr_accessor_with_history :name
+  attr_accessor_with_history :name, :surname
+  strong_attr_accessor(:strong1, String)
 end
 
+t = Test.new
+t.name = 5
+t.name = 'str', :symbol
+p t
+
+t.attr_accessor_history(:name_history)
+
+t.surname = 77
+t.surname = 'abs'
+p t
+
+t.attr_accessor_history(:surname_history)
+
+#false
+t1= Test.new
+p t1.methods
+t1.strong1 = 55
+p t1
+
+#true
+t2= Test.new
+p t2.methods
+t2.strong1 = 'str1'
+p t2

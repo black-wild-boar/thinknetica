@@ -55,17 +55,16 @@ module Validation
 
     def validate_presence(name)
       p 'Check validate_presence...'
-      raise if name.nil? || name == ''
+      raise 'Presence validation error!' if name.nil? || name == ''
         p "No validate_presence error #{valid?}"
-      rescue
+    rescue
         p "Validate_presence validation error! #{!valid?}"
     end
 
     def validate_format(name, format)
       p 'Check validate_format...'
-      p name
       format = Regexp.new "#{format}"
-    raise 'Format validation error!' if name !~ format
+      raise 'Format validation error!' if name !~ format
       p "No format error #{valid?}"
     rescue
       p "Format validation error! #{!valid?}"
@@ -73,7 +72,7 @@ module Validation
 
     def validate_type(name ,type)
       p 'Check validate_type'
-    raise 'Type validation error' if !name.is_a?type[0]
+      raise 'Type validation error' if !name.is_a?type[0]
       p "No type error #{valid?}"
     rescue
       p "Type validation error! #{!valid?}"
