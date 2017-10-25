@@ -6,16 +6,26 @@ class Train
   attr_accessor :number, :route, :wagons, :station_id, :speed
   include CompanyName
   include InstanceCounter
+  include Validation
 
   TRAIN_PATTERN = /^(\w{3}|[a-z]{3})+(-?)+(\d{2}|[a-z]{2})$/
+
+  # validate :number, :format, TRAIN_PATTERN
+  validate :speed, :type, Integer
+  validate :number, :presence
 
   @@trains = {}
 
   def initialize(number)
     @number = number
-    validate!
     @speed  = 0
+    validate!
     @wagons = {}
+    
+  end
+
+  def validate
+    self.validate!
   end
 
   def add(train)
@@ -60,16 +70,16 @@ class Train
     wagons.key?(wagon)
   end
 
-  def valid?
-    validate!
-  rescue
-    false
-  end
+  # def valid?
+  #   validate!
+  # rescue
+  #   false
+  # end
 
-  def validate!
-    raise 'Wrong train number' if @number !~ TRAIN_PATTERN
-    true
-  end
+  # def validate!
+  #   raise 'Wrong train number' if @number !~ TRAIN_PATTERN
+  #   true
+  # end
 
   def self.find(number)
     @@trains[number]
@@ -155,3 +165,11 @@ class Train
     end
   end
 end
+
+# Validate test
+
+# initialize
+t = Train.new('D')
+
+# instance method
+t.validate

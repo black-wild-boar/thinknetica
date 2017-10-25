@@ -1,25 +1,35 @@
 module Validation
+  
+  def self.included(mixin_class)
+    mixin_class.extend ClassMethods
+    mixin_class.send :include, InstanceMethods
+  end
+
   module ClassMethods
     def validate(check_attr, check_type, *attrs)
       p 'Save check rules invoke from class'
 
-      var_name = "@#{check_attr}".to_sym
-      check_attr_key = "#{check_attr}".to_sym
-      
-      check_type = "#{check_type}".to_sym
-      value = [ { check_type => attrs } ]
+      instance_var = "@#{check_attr}".to_sym
+      class_var = "@@#{check_attr}".to_sym
 
-      if instance_variable_get(var_name).nil?
-        instance_variable_set(var_name, [] << value)
+      check_type = check_type
+      attrs = attrs
+      # p "0class_variables = #{class_variables}"
+      rule = {check_attr => { check_type => attrs } }
+      # p "rule = #{rule}"
+
+      if !class_variable_defined?(class_var)
+        # If no rules exist
+        # p class_var
+        class_variable_set(class_var, rule)
       else
-        value_prev = instance_variable_get(var_name)
-        instance_variable_set(var_name, value_prev << value)
-      end
-
-      vars = instance_variables
-      vars.each do | var |
-        p "var = #{var} "
-        p instance_variable_get(var)
+        # If at least one rule exist
+        # p "1class_variables = #{class_variables}"
+        rule_prev = class_variable_get(class_var)
+        # p "rule_prev = #{rule_prev}"
+        rule_prev[check_attr].merge!(rule[check_attr])
+        rules = rule_prev
+        class_variable_set(class_var, rules)
       end
     end
   end
@@ -27,23 +37,36 @@ module Validation
   module InstanceMethods
     def validate!
       p 'Instance method validate!'
-      local_vars = instance_variables
-      class_inst_var = self.class.send(:instance_variables)
+      # p "instance_variables = #{instance_variables}"
+      class_vars = self.class.class_variables
+      # p "class_vars = #{class_vars}"
+      instance_vars = instance_variables
+      # p "instance_vars = #{instance_vars}"
 
-      local_vars.each do | local_var |
-        p "==== Validate for #{local_var} ===="
-        local_var_value = instance_variable_get(local_var)
-        check_rules = self.class.send(:instance_variable_get, local_var)
-        check_rules.each do | rule |
-          p "rule = #{rule}"
-            rule.each do | rule_hash |
-              rule_hash.select do | check_type, attrs |
-                validate_method = "validate_#{check_type}".to_sym
-                self.send(validate_method, local_var_value, attrs)
-              end
-            end
-        end
-      end
+      #  Getting variables only for exist rules
+      class_vars2instance_vars = class_vars.map! {|class_var| "#{class_var}".sub(/[@]/, '').to_sym}
+      # p "class_vars2instance_vars = #{class_vars2instance_vars} "
+      instance_vars.delete_if { | var_name | !class_vars2instance_vars.include?(var_name) }
+      # p "2instance_vars = #{instance_vars}"
+
+      instance_vars.each do | var_name |
+        p "==== Check = #{var_name} = value ===="
+
+        class_var_name = "@#{var_name}".to_sym
+        # p "class_var_name = #{class_var_name}"
+        # p "2var_name = #{var_name}"
+        rule_var_name = "#{var_name}".delete('@').to_sym
+        rule = self.class.class_variable_get(class_var_name).fetch(rule_var_name)
+        # p "rule = #{rule} "
+        rule.select do | check_method, attrs |
+          check_method = "validate_#{check_method}"
+          # p "check_method = #{check_method}"
+          # p "var_name = #{var_name}"
+          instance_value = instance_variable_get(var_name)
+          # p "instance_value = #{instance_value}"
+          self.send(check_method, instance_value, attrs)
+        end #rules    
+      end #var_names
     end
 
   private
@@ -51,9 +74,9 @@ module Validation
     def validate_presence(name, attr=nil)
       p 'Check validate_presence...'
       raise 'Presence validation error!' if name.nil? || name == ''
-        p "No validate_presence error: #{valid?}"
+        p "No presence error: #{valid?}"
     rescue
-        p "Validate_presence validation error! #{!valid?}"
+        p "Presence validation error! #{!valid?}"
     end
 
     def validate_format(name, attr)
@@ -80,10 +103,9 @@ module Validation
 end
 
 class Test
-  extend  Validation::ClassMethods
-  include Validation::InstanceMethods
+  include Validation
 
-  attr_accessor :name, :name1
+  attr_accessor :name, :name1, :name3
 
   validate :name1, :presence
   validate :name1, :type, String
@@ -96,6 +118,7 @@ end
 p 'Variable b contains an instance of class Test. Check attributes :name1 && :name with rules invoke from class'
 t = Test.new
 t.name1 = 'DD'
-t.name = '3'
+t.name = ''
 p t 
+t.name3 = 333
 t.validate!
