@@ -37,39 +37,92 @@ module Validation
     p "var_name = #{var_name}"
     # value = [] << {"#{check_attr}": {check_type: check_type, attrs: attrs}}
     
-    value = {"#{check_attr}": [ check_type: check_type, attrs: attrs] }
-    p "value = #{value}"
-    # p "value[to_sym] = #{value["#{check_attr}".to_sym]}"
-    p value.fetch("#{check_attr}".to_sym)
+    check_attr_key = "#{check_attr}".to_sym
     
-    if !instance_variable_get(var_name).nil?
-      global_scope = instance_variable_get(var_name)
+    check_type = "#{check_type}".to_sym
+
+    # value = [ check_attr_key =>  { check_type => [attrs] } ]
+    value = [ { check_type => [attrs] } ]
+# value = { check_attr_key => [ { check_type => [attrs] } ] }
 
     p "value = #{value}"
-    p "value[to_sym] = #{value["#{check_attr}".to_sym]}"
-    p value.fetch("#{check_attr}".to_sym)
+    
+# checktype_and_attr_by_key = value[check_attr_key]
 
+# p "checktype_and_attr_by_key = #{checktype_and_attr_by_key}"
 
-      p "global_scope = #{global_scope}"
+# attr_by_key_and_checktype = checktype_and_attr_by_key[check_type]
 
-p "global_scope = #{global_scope["#{check_attr}".to_sym]}"
-      global_scope = "#{global_scope["#{check_attr}".to_sym]}"
-      p "global_scope = #{global_scope}"
-      value = "#{value["#{check_attr}".to_sym]}"
-    p "value = #{value}"
+# p "attr_by_key_and_checktype = #{attr_by_key_and_checktype}"
+  p "instance_variable_get(var_name) = #{instance_variable_get(var_name)}"
 
-      instance_variable_set(var_name, global_scope << value)
-    else
-      # run one first time
+    if instance_variable_get(var_name).nil?
       instance_variable_set(var_name, value)
+    else
+      value_prev = instance_variable_get(var_name)
+      # p "222value_prev = #{value_prev}"
+#       attr_value_prev = value_prev[check_attr_key][check_type] || [nil]
+#       p "222attr_value_prev = #{attr_value_prev}"
+#       attr_value = value[check_attr_key][check_type || nil]
+#       p "222attr_value = #{attr_value}"
+#       new_attr = attr_value_prev << attr_value
+#       p "new_attr = #{new_attr}"
+
+# #new attr value
+#       # value = value_prev << value
+
+#       value[check_attr_key][check_type] = [new_attr]
+# p "222value = #{value}"
+
+    # value[check_attr_key] = value_prev[check_attr_key] << value[check_attr_key]
+    #   p "222v = #{value}"
+
+    v_p = value_prev#[check_attr_key][check_type] || [nil]
+    p "222v_p = #{v_p}"
+    v = value#[check_attr_key][check_type] || [nil]
+    p "222v = #{v}"
+    # p value[check_attr_key][check_type].class if check_type == :format
+
+# value[check_attr_key][check_type] = v_p << v
+    # p "222value = #{value}"
+
+      instance_variable_set(var_name, v_p << v)
     end
 
-    p "instance_variables #{instance_variables}"
+
+    p "222instance_variables = #{instance_variables}"
+
     vars = instance_variables #{instance_variables}
     vars.each do | var |
       p "var = #{var} "
       p instance_variable_get(var)
     end
+
+#     # p "value[to_sym] = #{value["#{check_attr}".to_sym]}"
+#     p value.fetch("#{check_attr}".to_sym)
+    
+#     if !instance_variable_get(var_name).nil?
+#       global_scope = instance_variable_get(var_name)
+
+#     p "value = #{value}"
+#     p "value[to_sym] = #{value["#{check_attr}".to_sym]}"
+#     p value.fetch("#{check_attr}".to_sym)
+
+
+#       p "global_scope = #{global_scope}"
+
+# p "global_scope = #{global_scope["#{check_attr}".to_sym]}"
+#       global_scope = "#{global_scope["#{check_attr}".to_sym]}"
+#       p "global_scope = #{global_scope}"
+#       value = "#{value["#{check_attr}".to_sym]}"
+#     p "value = #{value}"
+
+#       instance_variable_set(var_name, global_scope << value)
+#     else
+#       # run one first time
+#       instance_variable_set(var_name, value)
+#     end
+
     end
   end
 
@@ -147,15 +200,15 @@ class Test
 
   validate :name1, :presence
   validate :name1, :type, String
-  validate :name, :type, Integer
+  # validate :name, :type, Integer
   validate :name, :presence
-  validate :name1, :format, '[A-Z]'
+  validate :name1, :format, /[A-Z]/
 
 end
 
-p 'Variable b contains an instance of class Test. Check attributes :name1 && :name with rules invoke from class'
-b = Test.new
-b.name1 = 'DD'
-b.name = 5
-p b 
-b.validate!
+# p 'Variable b contains an instance of class Test. Check attributes :name1 && :name with rules invoke from class'
+# b = Test.new
+# b.name1 = 'DD'
+# b.name = 5
+# p b 
+# b.validate!
