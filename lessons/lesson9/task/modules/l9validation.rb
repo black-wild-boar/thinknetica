@@ -6,72 +6,46 @@ module Validation
   end
 
   module ClassMethods
-    def validate(check_attr, check_type, *attrs)
+ 
+    def validate(check_attr, check_type, attr = nil)
       p 'Save check rules invoke from class'
 
-      instance_var = "@#{check_attr}".to_sym
-      class_var = "@@#{check_attr}".to_sym
+      @validate_rules ||= {}
+      @validate_rules[check_type] ||= {}
+      @validate_rules[check_type][check_attr] ||= []
+      @validate_rules[check_type][check_attr] << attr
+    end
 
-      check_type = check_type
-      attrs = attrs
-      # p "0class_variables = #{class_variables}"
-      rule = {check_attr => { check_type => attrs } }
-      # p "rule = #{rule}"
-
-      if !class_variable_defined?(class_var)
-        # If no rules exist
-        # p class_var
-        class_variable_set(class_var, rule)
-      else
-        # If at least one rule exist
-        # p "1class_variables = #{class_variables}"
-        rule_prev = class_variable_get(class_var)
-        # p "rule_prev = #{rule_prev}"
-        rule_prev[check_attr].merge!(rule[check_attr])
-        rules = rule_prev
-        class_variable_set(class_var, rules)
-      end
+    def validate_rules
+      return @validate_rules
     end
   end
 
   module InstanceMethods
     def validate!
       p 'Instance method validate!'
-      # p "instance_variables = #{instance_variables}"
-      class_vars = self.class.class_variables
-      # p "class_vars = #{class_vars}"
-      instance_vars = instance_variables
-      # p "instance_vars = #{instance_vars}"
 
-      #  Getting variables only for exist rules
-      class_vars2instance_vars = class_vars.map! {|class_var| "#{class_var}".sub(/[@]/, '').to_sym}
-      # p "class_vars2instance_vars = #{class_vars2instance_vars} "
-      instance_vars.delete_if { | var_name | !class_vars2instance_vars.include?(var_name) }
-      # p "2instance_vars = #{instance_vars}"
-
-      instance_vars.each do | var_name |
-        p "==== Check = #{var_name} = value ===="
-
-        class_var_name = "@#{var_name}".to_sym
-        # p "class_var_name = #{class_var_name}"
-        # p "2var_name = #{var_name}"
-        rule_var_name = "#{var_name}".delete('@').to_sym
-        rule = self.class.class_variable_get(class_var_name).fetch(rule_var_name)
-        # p "rule = #{rule} "
-        rule.select do | check_method, attrs |
-          check_method = "validate_#{check_method}"
-          # p "check_method = #{check_method}"
-          # p "var_name = #{var_name}"
-          instance_value = instance_variable_get(var_name)
-          # p "instance_value = #{instance_value}"
-          self.send(check_method, instance_value, attrs)
-        end #rules    
-      end #var_names
+      all_rules = self.class.send(:validate_rules)
+      local_vars = instance_variables.map! { | var | var.to_s.delete('@') }
+      rules_vars = all_rules.values[0].keys.map(&:to_s) 
+      local_vars_with_rules = (local_vars & rules_vars).map!(&:to_sym)
+      local_vars_with_rules.each do | exist_var |
+        value = instance_variable_get("@#{exist_var}".to_sym)
+        all_rules.each_pair do | check_key, check_value |
+          check_value.each_pair do | var_name, attr |
+            if var_name == exist_var
+              send("validate_#{check_key}".to_sym, value, attr[0])
+            else
+              p "No rule for local Variable #{exist_var}"
+            end
+          end
+        end
+      end
     end
 
   private
 
-    def validate_presence(name, attr=nil)
+    def validate_presence(name, attr)
       p 'Check validate_presence...'
       raise 'Presence validation error!' if name.nil? || name == ''
         p "No presence error: #{valid?}"
@@ -81,7 +55,7 @@ module Validation
 
     def validate_format(name, attr)
       p 'Check validate_format...'
-      attr = Regexp.new(attr[0])
+      attr = Regexp.new(attr)
       raise 'Format validation error!' if name.to_s !~ attr
       p "No format error: #{valid?}"
     rescue
@@ -90,7 +64,7 @@ module Validation
 
     def validate_type(name ,attr)
       p 'Check validate_type'
-      raise 'Type validation error' if !name.is_a?attr[0]
+      raise 'Type validation error' if !name.is_a?attr
       p "No type error: #{valid?}"
     rescue
       p "Type validation error! #{!valid?}"
@@ -117,8 +91,8 @@ end
 
 p 'Variable b contains an instance of class Test. Check attributes :name1 && :name with rules invoke from class'
 t = Test.new
-t.name1 = 'DD'
-t.name = ''
+t.name1 = 0
+# t.name = 'EE'
 p t 
 t.name3 = 333
 t.validate!
